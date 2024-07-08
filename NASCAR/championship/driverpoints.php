@@ -33,7 +33,7 @@ print '<TR>';
 	$track_color= 'white';
 	$track_color= $result['ColorCode'];
 	$raceID = $result['ID'];
-	print "<TH bgcolor= $track_color><a href='../championship/raceresult.php?ID=".$raceID."'>".$result['StreckenKz']."</a></TH>";
+	print "<TH bgcolor= $track_color><a href='../championship/raceresult.php?ID=".$raceID."&Champ=".$championship_name."'>".$result['StreckenKz']."</a></TH>";
 	}
 	print'<TH><FONT>Points</FONT></TH>';
 print '</TR>';

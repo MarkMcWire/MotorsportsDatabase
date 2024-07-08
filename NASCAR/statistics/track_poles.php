@@ -8,6 +8,7 @@
 <p>
 <h2>&Uuml;bersicht Poles nach Rennstrecken und Meisterschaft</h2>
 <br/>
+<p align="left">
 <?php
 if (isset($_GET["Champ"])) {$championship_name_global = $_GET["Champ"];} ELSE {$championship_name_global = '';}
 include("verbindung.php");
@@ -28,10 +29,10 @@ while ($results_championship = $recordset_championship->fetch_assoc()) {
 	while ($results_drivers = $recordset_drivers->fetch_assoc()) {
 		
 		$events = 0;
-		print '<TABLE border=1 cellpadding=1 cellspacing=0><TR>';
-		print'<TH align="left"><FONT size="2">Fahrer</FONT></TH>';
-		print'<TH><FONT size="2">Total</FONT></TH>';
-		print'<TH><FONT size="2">Prozent</FONT></TH>';
+		print '<TABLE border=1 cellpadding=1 cellspacing=1><TR>';
+		print '<TH><FONT size="2">Fahrer</FONT></TH>';
+		print '<TH><FONT size="2">Total</FONT></TH>';
+		print '<TH><FONT size="2">Prozent</FONT></TH>';
 
 		$query_tracks = "SELECT tracks.ID as TrackID, tracks.Kennzeichen as StreckenKz, MAX(races.Length) as Length, MAX(track_type.Type) AS Type, MAX(track_type.ColorCode) AS ColorCode
 		FROM tracks INNER JOIN races on races.TrackID = tracks.ID INNER JOIN race_results on race_results.RaceID = races.ID INNER JOIN championship on championship.RaceID = races.ID LEFT JOIN track_type on track_type.ID = races.TypeID
@@ -48,7 +49,7 @@ while ($results_championship = $recordset_championship->fetch_assoc()) {
 			$events = $events + 1;
 			print "<TH bgcolor= $track_color><font size='2'><a'>".$track_abbreviation."</a></font></TH>";
 		}
-		print '</TR>';
+		print "</TR>";
 		
 		$query_Poles = "SELECT drivers.Name as drivers, drivers.ID as DriverID, count(distinct tracks.ID) as Poles
 		FROM race_results INNER JOIN drivers on drivers.ID = race_results.DriverID
@@ -63,10 +64,10 @@ while ($results_championship = $recordset_championship->fetch_assoc()) {
 		{
 			$driverID = $results_Poles['DriverID'];
 			
-			print'<TR>';
-			print"<TD align='left' width=150><FONT size='2'><a href='../driver/driver.php?ID=".$driverID."'>".$results_Poles['drivers'].'</a></FONT></TD>';
-			print'<TD width=75><FONT><b>'.$results_Poles['Poles'].' of '.$events.'</b></FONT></TD>';
-			print'<TD width=75><FONT><b>'.Round(100 * $results_Poles['Poles'] / $events, 2).' % </b></FONT></TD>';
+			print "<TR>";
+			print "<TD width=160><FONT size='2'><a href='../driver/driver.php?ID=".$driverID."'>".$results_Poles['drivers'].'</a></FONT></TD>';
+			print '<TD width=80><FONT><b>'.$results_Poles['Poles'].' of '.$events.'</b></FONT></TD>';
+			print '<TD width=80><FONT><b>'.Round(100 * $results_Poles['Poles'] / $events, 2).' % </b></FONT></TD>';
 	
 			include("verbindung.php");
 			$recordset = $database_connection->query($query_tracks);
@@ -92,12 +93,13 @@ while ($results_championship = $recordset_championship->fetch_assoc()) {
 					print "<TD bgcolor='white' align='center'></TD>";
 				}
 			}
-			print'</TR>';
+			print "</TR>";
 		}
-		print '</TABLE><BR/>';
+		print "</TABLE><BR/>";
 	}
 }
 ?>
+</p>
 <br/>
 </p>
 <p align="center">

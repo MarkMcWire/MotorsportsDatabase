@@ -145,10 +145,14 @@ if(isset($_POST["Import"])) {
 	$result = mysqli_query($database_connection, $sql_update_race_result_dnf1);
 	$sql_update_race_result_dnf2 = "UPDATE race_results SET STATUS = 'Running' WHERE (Status like 'running') or (Status like '%Flagged%') or (Status like '%:%') or (Status like '%.%') or (Status like '%+%') or (Status REGEXP '^[[:digit:]]+$');";
 	$result = mysqli_query($database_connection, $sql_update_race_result_dnf2);
-	$sql_update_race_result_dnf3 = "UPDATE race_results SET DNF = 1 WHERE Status <> 'Running';";
+	$sql_update_race_result_dnf3 = "UPDATE race_results SET STATUS = 'dnf' WHERE Status = '–';";
 	$result = mysqli_query($database_connection, $sql_update_race_result_dnf3);
-	$sql_update_race_result_dnf4 = "UPDATE race_results SET DNF = 0 WHERE Status = 'Running';";
+	$sql_update_race_result_dnf4 = "UPDATE race_results SET Status = LCASE(Status) WHERE Status NOT LIKE 'Running';";
 	$result = mysqli_query($database_connection, $sql_update_race_result_dnf4);
+	$sql_update_race_result_dnf5a = "UPDATE race_results SET DNF = 1 WHERE Status <> 'Running';";
+	$result = mysqli_query($database_connection, $sql_update_race_result_dnf5a);
+	$sql_update_race_result_dnf5b = "UPDATE race_results SET DNF = 0 WHERE Status LIKE 'Running';";
+	$result = mysqli_query($database_connection, $sql_update_race_result_dnf5b);
 	$sql_update_race_result_llf1 = "UPDATE race_results INNER JOIN (SELECT RaceID, MAX(Laps) AS LLF FROM race_results GROUP BY RaceID) AS LLFtemp ON race_results.RaceID = LLFtemp.RaceID SET race_results.LedLapFinish = 1 WHERE (race_results.RaceID = LLFtemp.RaceID) AND (race_results.Laps = LLFtemp.LLF) AND (race_results.Laps > 0);";
 	$result = mysqli_query($database_connection, $sql_update_race_result_llf1);
 	$sql_update_race_result_llf2 = "UPDATE race_results INNER JOIN (SELECT RaceID, MAX(Laps) AS LLF FROM race_results GROUP BY RaceID) AS LLFtemp ON race_results.RaceID = LLFtemp.RaceID SET race_results.LedLapFinish = 0 WHERE (race_results.RaceID = LLFtemp.RaceID) AND (race_results.Laps <> LLFtemp.LLF) OR (race_results.Laps = 0);";
@@ -164,8 +168,8 @@ if(isset($_POST["Import"])) {
 	$sql_race_laps = "UPDATE races LEFT JOIN (SELECT RaceID, MAX(Laps) AS MaxLaps FROM race_results GROUP BY RaceID) AS TempTable ON TempTable.RaceID = races.ID SET races.Runden = TempTable.MaxLaps WHERE TempTable.MaxLaps > races.Runden;";
 	$result = mysqli_query($database_connection, $sql_race_laps);
 	
-	$sql_update_qualy_scoring = "UPDATE championship SET championship.Race_Scoring = 1 WHERE RaceID IN (SELECT RaceID FROM race_results);";
-	$result = mysqli_query($database_connection, $sql_update_qualy_scoring);
+	$sql_update_race_scoring = "UPDATE championship SET championship.Race_Scoring = 1 WHERE RaceID IN (SELECT RaceID FROM race_results);";
+	$result = mysqli_query($database_connection, $sql_update_race_scoring);
 	
 	echo "<script type=\"text/javascript\">
 			alert(\"CSV files has been successfully imported.\");

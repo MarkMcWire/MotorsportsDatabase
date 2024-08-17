@@ -151,10 +151,14 @@ if(isset($_POST["Import"])) {
 	$result = mysqli_query($database_connection, $sql_update_race_result_dnf1);
 	$sql_update_race_result_dnf2 = "UPDATE sprint_results SET STATUS = 'Running' WHERE (Status like 'running') or (Status like '%Flagged%') or (Status like '%:%') or (Status like '%.%') or (Status like '%+%') or (Status REGEXP '^[[:digit:]]+$');";
 	$result = mysqli_query($database_connection, $sql_update_race_result_dnf2);
-	$sql_update_race_result_dnf3 = "UPDATE sprint_results SET DNF = 1 WHERE Status <> 'Running';";
+	$sql_update_race_result_dnf3 = "UPDATE sprint_results SET STATUS = 'dnf' WHERE Status = '–';";
 	$result = mysqli_query($database_connection, $sql_update_race_result_dnf3);
-	$sql_update_race_result_dnf4 = "UPDATE sprint_results SET DNF = 0 WHERE Status = 'Running';";
+	$sql_update_race_result_dnf4 = "UPDATE sprint_results SET Status = LCASE(Status) WHERE Status NOT LIKE 'Running';";
 	$result = mysqli_query($database_connection, $sql_update_race_result_dnf4);
+	$sql_update_race_result_dnf5a = "UPDATE sprint_results SET DNF = 1 WHERE Status <> 'Running';";
+	$result = mysqli_query($database_connection, $sql_update_race_result_dnf5a);
+	$sql_update_race_result_dnf5b = "UPDATE sprint_results SET DNF = 0 WHERE Status LIKE 'Running';";
+	$result = mysqli_query($database_connection, $sql_update_race_result_dnf5b);
 	$sql_update_race_result_llf1 = "UPDATE sprint_results INNER JOIN (SELECT RaceID, MAX(Laps) AS LLF FROM sprint_results GROUP BY RaceID) AS LLFtemp ON sprint_results.RaceID = LLFtemp.RaceID SET sprint_results.LedLapFinish = 1 WHERE (sprint_results.RaceID = LLFtemp.RaceID) AND (sprint_results.Laps = LLFtemp.LLF) AND (sprint_results.Laps > 0);";
 	$result = mysqli_query($database_connection, $sql_update_race_result_llf1);
 	$sql_update_race_result_llf2 = "UPDATE sprint_results INNER JOIN (SELECT RaceID, MAX(Laps) AS LLF FROM sprint_results GROUP BY RaceID) AS LLFtemp ON sprint_results.RaceID = LLFtemp.RaceID SET sprint_results.LedLapFinish = 0 WHERE (sprint_results.RaceID = LLFtemp.RaceID) AND (sprint_results.Laps <> LLFtemp.LLF) OR (sprint_results.Laps = 0);";

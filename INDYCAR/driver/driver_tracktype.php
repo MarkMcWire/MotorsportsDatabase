@@ -13,7 +13,7 @@ $result = $recordset->fetch_assoc();
 #if(!$row)die("Keine Ergebnisse <br/>");
 
 $ID = $result['ID'];
-$name = $result['Name'];
+$name = $result['Display_Name'];
 if ($ID > 1) {
 	print '<p>';
 	print "<h2 align='center'>$name</h2>";
@@ -57,12 +57,12 @@ print '<TR>';
 print '</TR>';
 
 include("verbindung.php");
-$query1 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, drivers.Kategorie, COUNT(race_results.Finish) as Siege
+$query1 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, drivers.Kategorie, COUNT(race_results.Finish) as Siege
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
 WHERE race_results.Finish = 1 and drivers.ID = $ID
-GROUP BY drivers.Name, drivers.ID, drivers.Kategorie
+GROUP BY drivers.Display_Name, drivers.ID, drivers.Kategorie
 ORDER BY Siege DESC";
 $recordset1 = $database_connection->query($query1);
 $i = 0;
@@ -126,12 +126,12 @@ print '<TR>';
 print '</TR>';
 
 include("verbindung.php");
-$query3 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, drivers.Kategorie, COUNT(race_results.Start) as Poles
+$query3 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, drivers.Kategorie, COUNT(race_results.Start) as Poles
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
 WHERE race_results.Start = 1 and drivers.ID = $ID
-GROUP BY drivers.Name, drivers.ID, drivers.Kategorie
+GROUP BY drivers.Display_Name, drivers.ID, drivers.Kategorie
 ORDER BY Poles DESC";
 $recordset3 = $database_connection->query($query3);
 $i = 0;
@@ -195,12 +195,12 @@ print '<TR>';
 print '</TR>';
 
 include("verbindung.php");
-$query5 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, drivers.Kategorie, COUNT(race_results.Finish) as MLLs
+$query5 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, drivers.Kategorie, COUNT(race_results.Finish) as MLLs
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
 WHERE race_results.MostLapsLed = 1 and drivers.ID = $ID
-GROUP BY drivers.Name, drivers.ID, drivers.Kategorie
+GROUP BY drivers.Display_Name, drivers.ID, drivers.Kategorie
 ORDER BY MLLs DESC";
 $recordset5 = $database_connection->query($query5);
 $i = 0;
@@ -264,12 +264,12 @@ print '<TR>';
 print '</TR>';
 
 include("verbindung.php");
-$query7 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, drivers.Kategorie, COUNT(race_results.Finish) as FRLs
+$query7 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, drivers.Kategorie, COUNT(race_results.Finish) as FRLs
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
 WHERE race_results.FastestRaceLap = 1 and drivers.ID = $ID
-GROUP BY drivers.Name, drivers.ID, drivers.Kategorie
+GROUP BY drivers.Display_Name, drivers.ID, drivers.Kategorie
 ORDER BY FRLs DESC";
 $recordset7 = $database_connection->query($query7);
 $i = 0;
@@ -333,12 +333,12 @@ print '<TR>';
 print '</TR>';
 
 include("verbindung.php");
-$query7 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, drivers.Kategorie, COUNT(race_results.Finish) as MPGs
+$query7 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, drivers.Kategorie, COUNT(race_results.Finish) as MPGs
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
 WHERE race_results.MostPositionsGained = 1 and drivers.ID = $ID
-GROUP BY drivers.Name, drivers.ID, drivers.Kategorie
+GROUP BY drivers.Display_Name, drivers.ID, drivers.Kategorie
 ORDER BY MPGs DESC";
 $recordset7 = $database_connection->query($query7);
 $i = 0;

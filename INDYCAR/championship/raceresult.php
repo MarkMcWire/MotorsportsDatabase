@@ -44,7 +44,7 @@ print "<h3 align='center'>".$result['Runden']." Runden (".$result['DistanzM']." 
 </tr>
 <?php
 include("verbindung.php");
-$query1 = "SELECT races.ID, race_results.Car, drivers.ID as DriverID, drivers.Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.MostLapsLed as MLL, race_results.MostPositionsGained as MPG, race_results.FastestRaceLap as FRL, race_results.Status, 
+$query1 = "SELECT races.ID, race_results.Car, drivers.ID as DriverID, drivers.Display_Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.MostLapsLed as MLL, race_results.MostPositionsGained as MPG, race_results.FastestRaceLap as FRL, race_results.Status, 
 	IF(race_results.DNF = 1, '#EFCFFF', IF(race_results.LedLapFinish = 0, '#CFCFFF', IF(race_results.Finish > 5, '#CFEAFF', race_result_colors.ColorCode))) AS ColorCode
 	FROM races LEFT JOIN tracks on races.TrackID = tracks.ID LEFT JOIN race_results on race_results.RaceID = races.ID LEFT JOIN drivers on race_results.DriverID = drivers.ID LEFT JOIN race_result_colors on (race_result_colors.Finish = race_results.Finish)
 	WHERE (races.ID = $RaceID or $RaceID = 0) ORDER BY races.ID, race_results.Finish";
@@ -69,7 +69,7 @@ print "<td>";
 echo $row['Car'];
 print "</td>";
 print "<td>";
-print "<a href='../driver/driver.php?ID=".$driverID."'>".$row['Name']."</a>";
+print "<a href='../driver/driver.php?ID=".$driverID."'>".$row['Display_Name']."</a>";
 print "</td>";
 print "<td>";
 echo $row['Laps'];
@@ -109,7 +109,7 @@ print "</tr>";
 <table border="1" cellspacing="0">
 <?php
 include("verbindung.php");
-$query1 = "SELECT races.ID, stage_results.StageID, race_results.Car, drivers.ID as DriverID, drivers.Name, stage_results.Position, stage_results.Laps, IF(stage_results.Position > 5, '#CFEAFF', race_result_colors.ColorCode) AS ColorCode
+$query1 = "SELECT races.ID, stage_results.StageID, race_results.Car, drivers.ID as DriverID, drivers.Display_Name, stage_results.Position, stage_results.Laps, IF(stage_results.Position > 5, '#CFEAFF', race_result_colors.ColorCode) AS ColorCode
 	FROM races LEFT JOIN tracks on races.TrackID = tracks.ID LEFT JOIN stage_results on stage_results.RaceID = races.ID LEFT JOIN drivers on stage_results.DriverID = drivers.ID LEFT JOIN race_results on (race_results.RaceID = stage_results.RaceID and race_results.DriverID = stage_results.DriverID) LEFT JOIN race_result_colors on (race_result_colors.Finish = stage_results.Position)
 	WHERE (races.ID = $RaceID or $RaceID = 0) ORDER BY races.ID, stage_results.StageID, stage_results.Position";
 $recordset1 = $database_connection->query($query1);
@@ -132,7 +132,7 @@ print "<td>";
 echo $row['Car'];
 print "</td>";
 print "<td>";
-print "<a href='../driver/driver.php?ID=".$driverID."'>".$row['Name']."</a>";
+print "<a href='../driver/driver.php?ID=".$driverID."'>".$row['Display_Name']."</a>";
 print "</td>";
 print "<td>";
 echo $row['Laps'];
@@ -151,7 +151,7 @@ print "</tr>";
 <table border="1" cellspacing="0">
 <?php
 include("verbindung.php");
-$query1 = "SELECT races.ID, sprint_results.SprintID, sprint_results.Car, drivers.ID as DriverID, drivers.Name, sprint_results.Start, sprint_results.Finish, sprint_results.Laps, sprint_results.Led, sprint_results.MostLapsLed as MLL, sprint_results.MostPositionsGained as MPG, sprint_results.FastestRaceLap as FRL, sprint_results.Status, 
+$query1 = "SELECT races.ID, sprint_results.SprintID, sprint_results.Car, drivers.ID as DriverID, drivers.Display_Name, sprint_results.Start, sprint_results.Finish, sprint_results.Laps, sprint_results.Led, sprint_results.MostLapsLed as MLL, sprint_results.MostPositionsGained as MPG, sprint_results.FastestRaceLap as FRL, sprint_results.Status, 
 	IF(sprint_results.DNF = 1, '#EFCFFF', IF(sprint_results.LedLapFinish = 0, '#CFCFFF', IF(sprint_results.Finish > 5, '#CFEAFF', race_result_colors.ColorCode))) AS ColorCode
 	FROM races LEFT JOIN tracks on races.TrackID = tracks.ID LEFT JOIN sprint_results on sprint_results.RaceID = races.ID LEFT JOIN drivers on sprint_results.DriverID = drivers.ID LEFT JOIN race_result_colors on (race_result_colors.Finish = sprint_results.Finish)
 	WHERE (races.ID = $RaceID or $RaceID = 0) ORDER BY races.ID, sprint_results.SprintID, sprint_results.Finish";
@@ -179,7 +179,7 @@ print "<td>";
 echo $finish;
 print "</td>";
 print "<td>";
-print "<a href='../driver/driver.php?ID=".$driverID."'>".$row['Name']."</a>";
+print "<a href='../driver/driver.php?ID=".$driverID."'>".$row['Display_Name']."</a>";
 print "</td>";
 print "<td>";
 echo $row['Car'];

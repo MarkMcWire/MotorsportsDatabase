@@ -41,11 +41,11 @@ print '<h3>Fahrer&uuml;bersicht '.$season.'</h3>';
 	<TH><FONT>Main Races</FONT></TH>
 	<TH><FONT>Sprint Races</FONT></TH>
 	<TH><FONT>Stages</FONT></TH>
-	<TH><FONT>Bonus</FONT></TH>
+	<TH><FONT>Bonus/Penalty</FONT></TH>
 </TR>
 <?php
 include("verbindung.php");
-$query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.Name, 
+$query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.Display_Name, 
 	(SUM(TT.Rennpunkte) + SUM(TT.Sprintpunkte) + SUM(TT.Stagepunkte) + SUM(TT.Bonuspunkte)) AS Punkte, 
 	SUM(TT.Rennpunkte) AS Rennpunkte, 
 	SUM(TT.Sprintpunkte) AS Sprintpunkte, 
@@ -122,7 +122,7 @@ $query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.
 	AND (penalties.DriverID = race_results.DriverID)
 	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.RaceID, race_results.DriverID
 	) AS TT INNER JOIN drivers ON drivers.ID = TT.DriverID
-	GROUP BY TT.Saison, TT.Bezeichnung, TT.Kategorie, TT.DriverID, drivers.Name
+	GROUP BY TT.Saison, TT.Bezeichnung, TT.Kategorie, TT.DriverID, drivers.Display_Name
 	ORDER BY TT.Saison, TT.Bezeichnung, TT.Kategorie, Punkte DESC, Platzierungen";
 $recordset0 = $database_connection->query($query0);
 include("verbindung.php");
@@ -196,7 +196,7 @@ if (($i > 1) && ($points - $points_max == 0)) {$race_color = 'khaki';}
 
 print"<TR bgcolor ='$race_color'>";
 	print'<TH><FONT >'.$i.'</FONT></TH>';
-	print"<TD align='left'><FONT ><a href='../driver/driver.php?ID=".$driverID."'>".$row['Name'].'</a></FONT></TD>';
+	print"<TD align='left'><FONT ><a href='../driver/driver.php?ID=".$driverID."'>".$row['Display_Name'].'</a></FONT></TD>';
 	print'<TD><FONT >'.$events.'</FONT></TD>';
 	print'<TD><FONT >'.$wins.'</FONT></TD>';
 	print'<TD><FONT >'.$top5.'</FONT></TD>';

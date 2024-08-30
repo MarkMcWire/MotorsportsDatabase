@@ -114,20 +114,20 @@ if(isset($_POST["Import"])) {
 						$driver_name = trim(str_replace(",", "", $driver_name));
 						
 						$max_id_driver = 1;
-						$query_driver = "SELECT ID, Name FROM drivers WHERE Suchname LIKE '%".$driver_name."%'";
+						$query_driver = "SELECT ID, Display_Name FROM drivers WHERE Comparison_Name LIKE '%".$driver_name."%'";
 						
 						$recordset = $database_connection->query($query_driver);
 						if ($result_driver = $recordset->fetch_assoc()) {
-							$driver_name = $result_driver['Name'];
+							$driver_name = $result_driver['Display_Name'];
 							$driverID = $result_driver['ID'];
 						} else {
 							$max_id_driver = 1 + $database_connection->query("SELECT MAX(ID) AS MaxID FROM drivers")->fetch_assoc()['MaxID'];
-							$sql_insert_driver = "INSERT into drivers (ID, Suchname, Name, Kategorie)
+							$sql_insert_driver = "INSERT into drivers (ID, Comparison_Name, Display_Name, Kategorie)
 							values ('".$max_id_driver."','".$driver_name."','".$driver_name."','0')";
 							print($sql_insert_driver."<br />");
 							$result_insert_driver = mysqli_query($database_connection, $sql_insert_driver);
 							
-							$query_driver = "SELECT ID, Name FROM drivers WHERE Name = '".$driver_name."'";
+							$query_driver = "SELECT ID, Display_Name FROM drivers WHERE Display_Name = '".$driver_name."'";
 							$recordset = $database_connection->query($query_driver);
 							$driverID = $recordset->fetch_assoc()['ID'];
 						}

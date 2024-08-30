@@ -51,11 +51,11 @@ while ($results_championship = $recordset_championship->fetch_assoc()) {
 		}
 		print "</TR>";
 		
-		$query_wins = "SELECT drivers.Name as drivers, drivers.ID as DriverID, count(distinct tracks.ID) as Siege
+		$query_wins = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, count(distinct tracks.ID) as Siege
 		FROM race_results INNER JOIN drivers on drivers.ID = race_results.DriverID
 		INNER JOIN races on races.ID = race_results.RaceID INNER JOIN tracks on tracks.ID = races.TrackID INNER JOIN championship on championship.RaceID = races.ID
 		WHERE (race_results.Finish = 1) and (drivers.ID = ".$results_drivers['DriverID'].") and (championship.Bezeichnung LIKE '".$results_championship['Bezeichnung']."') and (championship.Bezeichnung LIKE '".$results_championship['Bezeichnung']."') 
-		GROUP BY drivers.Name, drivers.ID ORDER BY Siege DESC";
+		GROUP BY drivers.Display_Name, drivers.ID ORDER BY Siege DESC";
 		
 		include("verbindung.php");
 		$recordset_wins = $database_connection->query($query_wins);

@@ -6,14 +6,14 @@
 </head>
 <body>
 <?php
-if (isset($_GET["ID"])) {$driverID = $_GET["ID"]; $query = "SELECT * FROM drivers WHERE (ID = $driverID) ORDER BY Kategorie, Name";} ELSE {$query = "SELECT * FROM drivers ORDER BY Kategorie, Name";}
+if (isset($_GET["ID"])) {$driverID = $_GET["ID"]; $query = "SELECT * FROM drivers WHERE (ID = $driverID) ORDER BY Kategorie, Display_Name";} ELSE {$query = "SELECT * FROM drivers ORDER BY Kategorie, Display_Name";}
 include("verbindung.php");
 $recordset = $database_connection->query($query);
 $result = $recordset->fetch_assoc();
 #if(!$row)die("Keine Ergebnisse <br/>");
 
 $ID = $result['ID'];
-$name = $result['Name'];
+$name = $result['Display_Name'];
 if ($ID > 1) {
 	print "<p>";
 	print "<h2 align='center'>$name</h2>";
@@ -25,39 +25,39 @@ WHERE race_results.DriverID = $ID
 GROUP BY tracks.ID, tracks.Kennzeichen, races.TypeID, track_type.ColorCode
 ORDER BY tracks.Kennzeichen, tracks.ID";
 
-$query_wins = "SELECT drivers.Name as drivers, drivers.ID as DriverID, count(distinct tracks.ID) as Siege
+$query_wins = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, count(distinct tracks.ID) as Siege
 FROM race_results INNER JOIN drivers on drivers.ID = race_results.DriverID
 INNER JOIN races on races.ID = race_results.RaceID INNER JOIN tracks on tracks.ID = races.TrackID
 WHERE Finish = 1 and drivers.ID = $ID
-GROUP BY drivers.Name, drivers.ID 
+GROUP BY drivers.Display_Name, drivers.ID 
 ORDER BY Siege DESC";
 
-$query_poles = "SELECT drivers.Name as drivers, drivers.ID as DriverID, count(distinct tracks.ID) as Poles
+$query_poles = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, count(distinct tracks.ID) as Poles
 FROM race_results INNER JOIN drivers on drivers.ID = race_results.DriverID
 INNER JOIN races on races.ID = race_results.RaceID INNER JOIN tracks on tracks.ID = races.TrackID
 WHERE Start = 1 and drivers.ID = $ID
-GROUP BY drivers.Name, drivers.ID 
+GROUP BY drivers.Display_Name, drivers.ID 
 ORDER BY Poles DESC";
 
-$query_mlls = "SELECT drivers.Name as drivers, drivers.ID as DriverID, count(distinct tracks.ID) as MLLs
+$query_mlls = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, count(distinct tracks.ID) as MLLs
 FROM race_results INNER JOIN drivers on drivers.ID = race_results.DriverID
 INNER JOIN races on races.ID = race_results.RaceID INNER JOIN tracks on tracks.ID = races.TrackID
 WHERE MostLapsLed = 1 and drivers.ID = $ID
-GROUP BY drivers.Name, drivers.ID 
+GROUP BY drivers.Display_Name, drivers.ID 
 ORDER BY MLLs DESC";
 
-$query_frls = "SELECT drivers.Name as drivers, drivers.ID as DriverID, count(distinct tracks.ID) as FRLs
+$query_frls = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, count(distinct tracks.ID) as FRLs
 FROM race_results INNER JOIN drivers on drivers.ID = race_results.DriverID
 INNER JOIN races on races.ID = race_results.RaceID INNER JOIN tracks on tracks.ID = races.TrackID
 WHERE FastestRaceLap = 1 and drivers.ID = $ID
-GROUP BY drivers.Name, drivers.ID 
+GROUP BY drivers.Display_Name, drivers.ID 
 ORDER BY FRLs DESC";
 
-$query_mpgs = "SELECT drivers.Name as drivers, drivers.ID as DriverID, count(distinct tracks.ID) as MPGs
+$query_mpgs = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, count(distinct tracks.ID) as MPGs
 FROM race_results INNER JOIN drivers on drivers.ID = race_results.DriverID
 INNER JOIN races on races.ID = race_results.RaceID INNER JOIN tracks on tracks.ID = races.TrackID
 WHERE MostPositionsGained = 1 and drivers.ID = $ID
-GROUP BY drivers.Name, drivers.ID 
+GROUP BY drivers.Display_Name, drivers.ID 
 ORDER BY MPGs DESC";
 //print $query;
 ?>

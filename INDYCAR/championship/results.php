@@ -81,11 +81,11 @@ print "</a>";
 print "</td>";
 include("verbindung.php");
 $query1 = "SELECT tracks.Bezeichnung as Rennstrecke, championship.Saison as Saison, races.Event as Event, race_results.Car as Autonummer, race_results.Start, race_results.Status,
-drivers.ID as DriverID, drivers.Name as DriverName
+drivers.ID as DriverID, drivers.Display_Name as DriverName
 FROM race_results INNER JOIN races on race_results.RaceID = races.ID LEFT JOIN championship on championship.RaceID = races.ID INNER JOIN tracks on races.TrackID = tracks.ID 
 INNER JOIN drivers on race_results.DriverID = drivers.ID 
 WHERE (race_results.Start = 1) and (races.ID = $ID or $ID = 0)
-GROUP BY championship.Saison, races.ID, races.Event, tracks.Bezeichnung, race_results.Car, race_results.Start, race_results.Status, drivers.ID, drivers.Name
+GROUP BY championship.Saison, races.ID, races.Event, tracks.Bezeichnung, race_results.Car, race_results.Start, race_results.Status, drivers.ID, drivers.Display_Name
 ORDER BY races.ID, race_results.Start";
 $recordset1 = $database_connection->query($query1);
 $result1 = $recordset1->fetch_assoc();
@@ -98,11 +98,11 @@ print "</a>";
 print "</td>";
 include("verbindung.php");
 $query2 = "SELECT tracks.Bezeichnung as Rennstrecke, championship.Saison as Saison, races.Event as Event, race_results.Car as Autonummer, race_results.Finish, race_results.Status,
-drivers.ID as DriverID, drivers.Name as DriverName
+drivers.ID as DriverID, drivers.Display_Name as DriverName
 FROM race_results INNER JOIN races on race_results.RaceID = races.ID LEFT JOIN championship on championship.RaceID = races.ID INNER JOIN tracks on races.TrackID = tracks.ID #
 INNER JOIN drivers on race_results.DriverID = drivers.ID 
 WHERE (race_results.Finish = 1) and (races.ID = $ID or $ID = 0)
-GROUP BY championship.Saison, races.ID, races.Event, tracks.Bezeichnung, race_results.Car, race_results.Finish, race_results.Status, drivers.ID, drivers.Name
+GROUP BY championship.Saison, races.ID, races.Event, tracks.Bezeichnung, race_results.Car, race_results.Finish, race_results.Status, drivers.ID, drivers.Display_Name
 ORDER BY races.ID, race_results.Finish";
 $recordset2 = $database_connection->query($query2);
 $result2 = $recordset2->fetch_assoc();
@@ -117,11 +117,11 @@ print "</b>";
 print "</td>";
 include("verbindung.php");
 $query3 = "SELECT tracks.Bezeichnung as Rennstrecke, championship.Saison as Saison, races.Event as Event, race_results.Car as Autonummer, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status,
-drivers.ID as DriverID, drivers.Name as DriverName
+drivers.ID as DriverID, drivers.Display_Name as DriverName
 FROM race_results INNER JOIN races on race_results.RaceID = races.ID LEFT JOIN championship on championship.RaceID = races.ID INNER JOIN tracks on races.TrackID = tracks.ID 
 INNER JOIN drivers on race_results.DriverID = drivers.ID 
 WHERE race_results.MostLapsLed and (races.ID = $ID or $ID = 0)
-GROUP BY championship.Saison, races.ID, races.Event, tracks.Bezeichnung, race_results.Car, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status, drivers.ID, drivers.Name
+GROUP BY championship.Saison, races.ID, races.Event, tracks.Bezeichnung, race_results.Car, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status, drivers.ID, drivers.Display_Name
 ORDER BY races.ID, race_results.Led, race_results.Finish";
 $recordset3 = $database_connection->query($query3);
 ;
@@ -138,11 +138,11 @@ print "<br />";
 print "</td>";
 include("verbindung.php");
 $query4 = "SELECT tracks.Bezeichnung as Rennstrecke, championship.Saison as Saison, races.Event as Event, race_results.Car as Autonummer, race_results.Finish, race_results.Status,
-drivers.ID as DriverID, drivers.Name as DriverName
+drivers.ID as DriverID, drivers.Display_Name as DriverName
 FROM race_results INNER JOIN races on race_results.RaceID = races.ID LEFT JOIN championship on championship.RaceID = races.ID INNER JOIN tracks on races.TrackID = tracks.ID 
 INNER JOIN drivers on race_results.DriverID = drivers.ID 
 WHERE race_results.FastestRaceLap and (races.ID = $ID or $ID = 0)
-GROUP BY championship.Saison, races.ID, races.Event, tracks.Bezeichnung, race_results.Car, race_results.Finish, race_results.Status, drivers.ID, drivers.Name
+GROUP BY championship.Saison, races.ID, races.Event, tracks.Bezeichnung, race_results.Car, race_results.Finish, race_results.Status, drivers.ID, drivers.Display_Name
 ORDER BY races.ID, race_results.Finish";
 $recordset4 = $database_connection->query($query4);
 ;
@@ -159,11 +159,11 @@ print "<br />";
 print "</td>";
 include("verbindung.php");
 $query5 = "SELECT tracks.Bezeichnung as Rennstrecke, championship.Saison as Saison, races.Event as Event, race_results.Car as Autonummer, race_results.RaceID, race_results.Finish, race_results.Status, (race_results.Start-race_results.Finish) as MPG,
-drivers.ID as DriverID, drivers.Name as DriverName
+drivers.ID as DriverID, drivers.Display_Name as DriverName
 FROM race_results INNER JOIN races on race_results.RaceID = races.ID LEFT JOIN championship on championship.RaceID = races.ID INNER JOIN tracks on races.TrackID = tracks.ID 
 INNER JOIN drivers on race_results.DriverID = drivers.ID 
 WHERE race_results.MostPositionsGained and (races.ID = $ID or $ID = 0)
-GROUP BY championship.Saison, races.ID, races.Event, tracks.Bezeichnung, race_results.Car, race_results.Start, race_results.Finish, race_results.Status, drivers.ID, drivers.Name
+GROUP BY championship.Saison, races.ID, races.Event, tracks.Bezeichnung, race_results.Car, race_results.Start, race_results.Finish, race_results.Status, drivers.ID, drivers.Display_Name
 ORDER BY race_results.RaceID, race_results.Finish";
 $recordset5 = $database_connection->query($query5);
 print "<td></td>";

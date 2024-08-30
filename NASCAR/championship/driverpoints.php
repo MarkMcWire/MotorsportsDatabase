@@ -39,7 +39,7 @@ print '<TR>';
 print '</TR>';
 
 include("verbindung.php");
-$query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.Name, (SUM(TT.Punkte) + SUM(TT.Bonuspunkte)) AS Punkte, SUM(TT.Bonuspunkte) AS Bonuspunkte, GROUP_CONCAT(LPAD(TT.Finish, 2, '0') ORDER BY TT.Finish) AS Platzierungen
+$query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.Display_Name, (SUM(TT.Punkte) + SUM(TT.Bonuspunkte)) AS Punkte, SUM(TT.Bonuspunkte) AS Bonuspunkte, GROUP_CONCAT(LPAD(TT.Finish, 2, '0') ORDER BY TT.Finish) AS Platzierungen
 	FROM (
 	SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie,
 	race_results.DriverID, race_results.Finish AS Finish, 0 AS Punkte, 0 AS Bonuspunkte
@@ -110,7 +110,7 @@ $query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.
 	AND (penalties.DriverID = race_results.DriverID)
 	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.RaceID, race_results.DriverID
 	) AS TT INNER JOIN drivers ON drivers.ID = TT.DriverID
-	GROUP BY TT.Saison, TT.Bezeichnung, TT.Kategorie, TT.DriverID, drivers.Name
+	GROUP BY TT.Saison, TT.Bezeichnung, TT.Kategorie, TT.DriverID, drivers.Display_Name
 	ORDER BY TT.Saison, TT.Bezeichnung, TT.Kategorie, Punkte DESC, Platzierungen";
 $recordset0 = $database_connection->query($query0);
 $i = 0;
@@ -122,7 +122,7 @@ $driverID = $row['DriverID'];
 
 print'<TR>';
 	print'<TH><FONT >'.$i.'</FONT></TH>';
-	print"<TD align='left'><FONT ><a href='../driver/driver.php?ID=".$driverID."'>".$row['Name'].'</a></FONT></TD>';
+	print"<TD align='left'><FONT ><a href='../driver/driver.php?ID=".$driverID."'>".$row['Display_Name'].'</a></FONT></TD>';
 	include("verbindung.php");
 	$query1 = "SELECT DriverID, raceID, max(Start) as Start, max(Finish) as Finish, max(Led) as Led, max(MLL) as MLL, MAX(FRL) AS FRL, max(MPG) as MPG, max(Status) as Status, SUM(Points) AS Points, max(ColorCode) AS ColorCode FROM
 		(SELECT race_results.DriverID as DriverID, races.ID as raceID, race_results.Start as Start, race_results.Finish as Finish, race_results.Led * races.Length as Led, race_results.MostLapsLed as MLL, race_results.FastestRaceLap as FRL, race_results.MostPositionsGained as MPG, race_results.Status, SUM(rank_points.Punkte) AS Points, 

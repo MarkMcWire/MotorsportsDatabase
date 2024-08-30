@@ -6,13 +6,13 @@
 </head>
 <body>
 <?php
-if (isset($_GET["ID"])) {$driverID = $_GET["ID"]; $query = "SELECT * FROM drivers WHERE (ID = $driverID) ORDER BY Kategorie, Name";} ELSE {$query = "SELECT * FROM drivers ORDER BY Kategorie, Name";}
+if (isset($_GET["ID"])) {$driverID = $_GET["ID"]; $query = "SELECT * FROM drivers WHERE (ID = $driverID) ORDER BY Kategorie, Display_Name";} ELSE {$query = "SELECT * FROM drivers ORDER BY Kategorie, Display_Name";}
 include("verbindung.php");
 $recordset = $database_connection->query($query);
 $result = $recordset->fetch_assoc();
 
 $ID = $result['ID'];
-$name = $result['Name'];
+$name = $result['Display_Name'];
 print '<p>';
 print "<h2>$name</h2>";
 print "</p>";

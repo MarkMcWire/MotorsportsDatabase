@@ -75,33 +75,33 @@ print "</td>";
 print "<td>";
 print "</td>";
 include("verbindung.php");
-$query1 = "SELECT races.Event as Event, drivers.ID as DriverID, drivers.Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
+$query1 = "SELECT races.Event as Event, drivers.ID as DriverID, drivers.Display_Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 LEFT JOIN championship on championship.RaceID = races.ID
 INNER JOIN tracks on races.TrackID = tracks.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
 WHERE (race_results.Start = 1) and (races.ID = $ID or $ID = 0)
-GROUP BY races.ID, races.Event, drivers.ID, drivers.Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
+GROUP BY races.ID, races.Event, drivers.ID, drivers.Display_Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
 ORDER BY races.ID, race_results.Start";
 $recordset1 = $database_connection->query($query1);
 $result1 = $recordset1->fetch_assoc();
 print "<td>";
 if ($result1) {$driverID = $result1['DriverID'];} else {$driverID = 0;}
 print "<a href='../driver/driver.php?ID=".$driverID."'>";
-if ($result1) {echo $result1['Name'];} else {echo '';}
+if ($result1) {echo $result1['Display_Name'];} else {echo '';}
 print "</a>";
 print "</td>";
 print "</td>";
 include("verbindung.php");
-$query2 = "SELECT races.Event as Event, drivers.ID as DriverID, drivers.Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
+$query2 = "SELECT races.Event as Event, drivers.ID as DriverID, drivers.Display_Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 LEFT JOIN championship on championship.RaceID = races.ID
 INNER JOIN tracks on races.TrackID = tracks.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
 WHERE (race_results.Finish = 1) and (races.ID = $ID or $ID = 0)
-GROUP BY races.ID, races.Event, drivers.ID, drivers.Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
+GROUP BY races.ID, races.Event, drivers.ID, drivers.Display_Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
 ORDER BY races.ID, race_results.Finish";
 $recordset2 = $database_connection->query($query2);
 $result2 = $recordset2->fetch_assoc();
@@ -109,19 +109,19 @@ print "<td>";
 print "<b>";
 if ($result2) {$driverID = $result2['DriverID'];} else {$driverID = 0;}
 print "<a href='../driver/driver.php?ID=".$driverID."'>";
-if ($result2) {echo $result2['Name'];} else {echo '';}
+if ($result2) {echo $result2['Display_Name'];} else {echo '';}
 print "</a>";
 print "</b>";
 print "</td>";
 include("verbindung.php");
-$query3 = "SELECT races.Event as Event, drivers.ID as DriverID, drivers.Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
+$query3 = "SELECT races.Event as Event, drivers.ID as DriverID, drivers.Display_Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 LEFT JOIN championship on championship.RaceID = races.ID
 INNER JOIN tracks on races.TrackID = tracks.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
 WHERE race_results.MostLapsLed and (races.ID = $ID or $ID = 0)
-GROUP BY races.ID, races.Event, drivers.ID, drivers.Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
+GROUP BY races.ID, races.Event, drivers.ID, drivers.Display_Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
 ORDER BY races.ID, race_results.Led";
 $recordset3 = $database_connection->query($query3);
 ;
@@ -130,20 +130,20 @@ while ($result3 = $recordset3->fetch_assoc())
 {
 if ($result3) {$driverID = $result3['DriverID'];} else {$driverID = 0;}
 print "<a href='../driver/driver.php?ID=".$driverID."'>";
-echo $result3['Name']." (".$result3['Led'].")";
+echo $result3['Display_Name']." (".$result3['Led'].")";
 print "</a>";
 print "<br />";
 }
 print "</td>";
 include("verbindung.php");
-$query4 = "SELECT races.Event as Event, drivers.ID as DriverID, drivers.Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
+$query4 = "SELECT races.Event as Event, drivers.ID as DriverID, drivers.Display_Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 LEFT JOIN championship on championship.RaceID = races.ID
 INNER JOIN tracks on races.TrackID = tracks.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
 WHERE race_results.FastestRaceLap and (races.ID = $ID or $ID = 0)
-GROUP BY races.ID, races.Event, drivers.ID, drivers.Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
+GROUP BY races.ID, races.Event, drivers.ID, drivers.Display_Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
 ORDER BY races.ID, race_results.Led";
 $recordset4 = $database_connection->query($query4);
 ;
@@ -152,20 +152,20 @@ while ($result4 = $recordset4->fetch_assoc())
 {
 if ($result4) {$driverID = $result4['DriverID'];} else {$driverID = 0;}
 print "<a href='../driver/driver.php?ID=".$driverID."'>";
-if ($result4) {echo $result4['Name'];} else {echo '';}
+if ($result4) {echo $result4['Display_Name'];} else {echo '';}
 print "</a>";
 print "<br />";
 }
 print "</td>";
 include("verbindung.php");
-$query5 = "SELECT races.Event as Event, drivers.ID as DriverID, drivers.Name, race_results.RaceID, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status, (race_results.Start-race_results.Finish) as MPG
+$query5 = "SELECT races.Event as Event, drivers.ID as DriverID, drivers.Display_Name, race_results.RaceID, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status, (race_results.Start-race_results.Finish) as MPG
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 LEFT JOIN championship on championship.RaceID = races.ID
 INNER JOIN tracks on races.TrackID = tracks.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
 WHERE race_results.MostPositionsGained and (races.ID = $ID or $ID = 0)
-GROUP BY races.ID, races.Event, drivers.ID, drivers.Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
+GROUP BY races.ID, races.Event, drivers.ID, drivers.Display_Name, race_results.Start, race_results.Finish, race_results.Laps, race_results.Led, race_results.Status
 ORDER BY race_results.RaceID, drivers.ID";
 $recordset5 = $database_connection->query($query5);
 print "<td>";
@@ -173,7 +173,7 @@ while ($result5 = $recordset5->fetch_assoc())
 {
 if ($result5) {$driverID = $result5['DriverID'];} else {$driverID = 0;}
 print "<a href='../driver/driver.php?ID=".$driverID."'>";
-echo $result5['Name']." (".$result5['MPG'].")";
+echo $result5['Display_Name']." (".$result5['MPG'].")";
 print "</a>";
 print "<br />";
 }

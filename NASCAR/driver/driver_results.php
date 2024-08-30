@@ -6,7 +6,7 @@
 </head>
 <body>
 <?php
-if (isset($_GET["ID"])) {$driverID = $_GET["ID"]; $query = "SELECT * FROM drivers WHERE (ID = $driverID) ORDER BY Kategorie, Name";} ELSE {$query = "SELECT * FROM drivers ORDER BY Kategorie, Name";}
+if (isset($_GET["ID"])) {$driverID = $_GET["ID"]; $query = "SELECT * FROM drivers WHERE (ID = $driverID) ORDER BY Kategorie, Display_Name";} ELSE {$query = "SELECT * FROM drivers ORDER BY Kategorie, Display_Name";}
 if (isset($_GET["Saison"])) {$season = $_GET["Saison"];} else {$season = 0;}
 if (isset($_GET["Champ"])) {$championship_name = $_GET["Champ"];} else {$championship_name = '';}
 include("verbindung.php");
@@ -15,7 +15,7 @@ $result = $recordset->fetch_assoc();
 #if(!$row)die("Keine Ergebnisse <br/>");
 
 $ID = $result['ID'];
-$name = $result['Name'];
+$name = $result['Display_Name'];
 print "<p>";
 print "<h2 align='center'>$name</h2>";
 print "</p>";

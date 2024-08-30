@@ -45,12 +45,12 @@ print '<TR>';
 print '</TR>';
 
 include("verbindung.php");
-$query0 = "SELECT drivers.ID as DriverID, drivers.Name as drivers,
+$query0 = "SELECT drivers.ID as DriverID, drivers.Display_Name as drivers,
 6 * SUM(race_results.Finish = 1) + 3 * SUM(race_results.Finish = 2) + 1 * SUM(race_results.Finish = 3) + SUM(race_results.LedLapFinish) + SUM(race_results.MostLapsLed) + SUM(race_results.FastestRaceLap) + SUM(race_results.Start = 1) as Gesamtwertung, GROUP_CONCAT(LPAD(race_results.Finish, 2, '0') ORDER BY race_results.Finish) AS Platzierungen
 FROM race_results
 LEFT JOIN races on race_results.RaceID = races.ID LEFT JOIN tracks on races.TrackID = tracks.ID LEFT JOIN drivers on race_results.DriverID = drivers.ID LEFT JOIN championship on races.ID = championship.RaceID
 WHERE (races.TrackID = $trackID or $trackID = 0) AND (championship.Bezeichnung = '$championship_name_global' or '$championship_name_global' = '')
-GROUP BY drivers.ID, drivers.Name
+GROUP BY drivers.ID, drivers.Display_Name
 ORDER BY Gesamtwertung DESC, Platzierungen";
 $recordset0 = $database_connection->query($query0);
 $i = 0;

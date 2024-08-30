@@ -18,7 +18,6 @@
 <th>Anzahl der Rennen</th>
 <th>Distanz</th>
 <th colspan='1'>Rennen</th>
-<th colspan='1'>Teilnehmer</th>
 </tr>
 <?php
 include("verbindung.php");
@@ -57,8 +56,6 @@ print $miles.' Meilen ('.$laps.' Runden)';
 print "</td>";
 print "<td>";
 print "<a href='schedule.php?Saison=".$season."&Champ=".$championship_name."&Kategorie=".$category."'>Saisonraces<br />".$championship_name.' '.$season."</a>";
-print "</td>";
-print "<td>";
 print "</td>";
 print "</tr>";
 }

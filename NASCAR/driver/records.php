@@ -34,7 +34,7 @@ print'<H3>Results after '.$events.' events</H3>';
 </TR>
 <?php
 include("verbindung.php");
-$query0 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as Events
+$query0 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as Events
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
@@ -72,7 +72,7 @@ print'</TR>';
 </TR>
 <?php
 include("verbindung.php");
-$query0 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, sum(race_results.laps) as Laps
+$query0 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, sum(race_results.laps) as Laps
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
@@ -113,7 +113,7 @@ print'</TR>';
 </TR>
 <?php
 include("verbindung.php");
-$query0 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, sum(race_results.laps) as Laps, sum(race_results.led) as Led
+$query0 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, sum(race_results.laps) as Laps, sum(race_results.led) as Led
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
@@ -158,7 +158,7 @@ print'</TR>';
 </TR>
 <?php
 include("verbindung.php");
-$query0 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as Siege
+$query0 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as Siege
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
@@ -197,7 +197,7 @@ print'</TR>';
 </TR>
 <?php
 include("verbindung.php");
-$query0 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as Siege
+$query0 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as Siege
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
@@ -236,7 +236,7 @@ print'</TR>';
 </TR>
 <?php
 include("verbindung.php");
-$query0 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as Siege
+$query0 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as Siege
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
@@ -275,7 +275,7 @@ print'</TR>';
 </TR>
 <?php
 include("verbindung.php");
-$query0 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as Poles
+$query0 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as Poles
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
@@ -314,7 +314,7 @@ print'</TR>';
 </TR>
 <?php
 include("verbindung.php");
-$query0 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as MLLs
+$query0 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as MLLs
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID
@@ -353,7 +353,7 @@ print'</TR>';
 </TR>
 <?php
 include("verbindung.php");
-$query0 = "SELECT drivers.Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as MPGs
+$query0 = "SELECT drivers.Display_Name as drivers, drivers.ID as DriverID, COUNT(race_results.Finish) as MPGs
 FROM race_results
 INNER JOIN races on race_results.RaceID = races.ID
 INNER JOIN drivers on race_results.DriverID = drivers.ID

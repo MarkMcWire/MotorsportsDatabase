@@ -84,7 +84,7 @@ if(isset($_POST["Import"])) {
 								$driver_name = trim(str_replace("'", "", $driver_name));
 								$driver_name = trim(str_replace(".", "", $driver_name));
 								$driver_name = trim(str_replace(",", "", $driver_name));
-								$query_driver = "SELECT ID, Name FROM drivers WHERE Suchname LIKE '%".$driver_name."%'";
+								$query_driver = "SELECT ID, Display_Name FROM drivers WHERE Comparison_Name LIKE '%".$driver_name."%'";
 								$recordset = $database_connection->query($query_driver);
 								$driverID = $recordset->fetch_assoc()['ID'];
 							}

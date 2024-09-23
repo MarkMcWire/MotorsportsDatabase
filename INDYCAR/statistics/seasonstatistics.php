@@ -91,7 +91,7 @@ $i = $i + 1;
 print"<tr bgcolor = '$track_color'>";
 	print'<TH><FONT >'.$row['Distanz'].'</FONT></TH>';
 	print'<TH><FONT >'.$row['ScheduledEvents'].' von '.$events.'</FONT></TH>';
-    print'<TD><FONT >'.$row['Miles'].' Meilen ('.$row['Laps'].' Runden)'.'</FONT></TD>';
+	print'<TD><FONT >'.$row['Miles'].' Meilen ('.$row['Laps'].' Runden)'.'</FONT></TD>';
 print'</TR>';
 }
 print "</table>";

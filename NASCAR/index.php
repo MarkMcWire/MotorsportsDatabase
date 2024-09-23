@@ -72,8 +72,8 @@
 	</TR>
 	<TR>
 		<TD><FONT><a href='statistics/seasonstatistics.php'>Saisonstatistik</a></FONT></TD>
+		<TD><FONT><a href='statistics/seasonchampions.php'>Meister</a></FONT></TD>
 		<TD><FONT><a href='statistics/records.php'>Rekorde (allgemein)</a><br /></TD>
-		<TD colspan="1"><FONT><a href='http://localhost/phpmyadmin/index.php'>PHP Administrator</a></FONT></TD>
 		<TD><FONT><a href='statistics/track_poles.php'>Poles nach Rennstrecke</a></FONT></TD>
 		<TD><FONT><a href='statistics/track_wins.php'>Siege nach Rennstrecke</a></FONT></TD>
 	</TR>

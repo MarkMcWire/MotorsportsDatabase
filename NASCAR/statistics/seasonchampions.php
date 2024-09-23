@@ -5,30 +5,52 @@
 	<title>Motorsport Statistik</title>
 </head>
 <body>
-<?php
-if (isset($_GET["Saison"])) {$season = $_GET["Saison"];} ELSE {$season = 0;}
-if (isset($_GET["Champ"])) {$championship_name = $_GET["Champ"];} ELSE {$championship_name = '0';}
-if (isset($_GET["Kategorie"])) {$category = $_GET["Kategorie"];} ELSE {$category = -1;}
-?>
+<h2>Saisonstatistik</h2>
 <p>
-<TABLE border="2" cellspacing="10">
-<TR>
-<TD>
+<table border="2" cellspacing="10">
+<tr valign='top'>
+<td>
+<p>
+<table border='1' cellspacing='0'>
+<tr>
+<th>Saison</th>
+<th>Meisterschaft</th>
+<th>Champion</th>
+</tr>
 <?php
-print '<h3>Fahrermeisterschaft '.$season.'</h3>';
-?>
-<TABLE border=1 cellpadding=3 cellspacing=0>
-<TR>
-	<TH rowspan="1"><FONT>Position</FONT></TH>
-	<TH align="left" rowspan="1"><FONT >Driver</FONT></TH>
-	<TH><FONT>Total</FONT></TH>
-	<TH><FONT>Interval</FONT></TH>
-	<TH><FONT>Main Races</FONT></TH>
-	<TH><FONT>Sprint Races</FONT></TH>
-	<TH><FONT>Stages</FONT></TH>
-	<TH><FONT>Bonus/Penalty</FONT></TH>
-</TR>
-<?php
+if (isset($_GET["Champ"])) {$championship_name_global = $_GET["Champ"];} ELSE {$championship_name_global = '';}
+include("verbindung.php");
+$query = "SELECT championship.Saison, championship.Bezeichnung as Championship, championship.Kategorie, count(races.ID) as ScheduledEvents, count(race_results.Finish) as FinishedEvents, sum(races.Runden) as Laps, sum(races.Runden * races.Length) as Distanz
+FROM (championship INNER JOIN races on races.ID = championship.RaceID INNER JOIN tracks on races.TrackID = tracks.ID) LEFT JOIN race_results on (race_results.RaceID = races.ID) and (race_results.Finish = 1)
+WHERE (championship.Bezeichnung = '$championship_name_global' or '$championship_name_global' = '')
+GROUP BY championship.Saison, championship.Bezeichnung, championship.Kategorie ORDER BY Championship, Saison ASC";
+$recordset = $database_connection->query($query);
+while ($row = $recordset->fetch_assoc())
+{
+$season = $row['Saison'];
+$championship_name = $row['Championship'];
+$category = $row['Kategorie'];
+$events = $row['ScheduledEvents'];
+$fevents = $row['FinishedEvents'];
+$laps = $row['Laps'];
+$miles = $row['Distanz'];
+if ($events == $fevents) {$track_color = 'darkgrey';}
+else {$track_color = 'lightgrey';}
+if ($championship_name == '' or $championship_name == NULL) {$track_color = 'lightgrey';}
+print "<tr bgcolor = $track_color align='center'>";
+print "<td>";
+echo $season;
+print "</td>";
+print "<td>";
+echo $championship_name;
+print "</td>";
+print "<td>";
+print "<table border='1' cellspacing='0'>";
+print "<tr bgcolor = $track_color align='center'>";
+print "<th>Driver</th>";
+print "<th>Points</th>";
+print "<th>Interval</th>";
+print "</tr>";
 include("verbindung.php");
 $query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.Display_Name, 
 	(SUM(TT.Rennpunkte) + SUM(TT.Sprintpunkte) + SUM(TT.Stagepunkte) + SUM(TT.Bonuspunkte)) AS Punkte, 
@@ -108,81 +130,39 @@ $query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.
 	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.RaceID, race_results.DriverID
 	) AS TT INNER JOIN drivers ON drivers.ID = TT.DriverID
 	GROUP BY TT.Saison, TT.Bezeichnung, TT.Kategorie, TT.DriverID, drivers.Display_Name
-	ORDER BY TT.Saison, TT.Bezeichnung, TT.Kategorie, Punkte DESC, Platzierungen";
+	ORDER BY TT.Saison, TT.Bezeichnung, TT.Kategorie, Punkte DESC, Platzierungen LIMIT 2";
 $recordset0 = $database_connection->query($query0);
 $i = 0;
-$points_left = 0;
 while ($row = $recordset0->fetch_assoc())
 {
 $i = $i + 1;
-$points = $row['Punkte'];
-if ($i == 1) {$points_max = $points;}
-$driverID = $row['DriverID'];
+	if ($i == 1) {
+		$champ = $row['Display_Name'];
+		$maxpoints = $row['Punkte'];
+	}
 
-include("verbindung.php");
-$query3 = "
-SELECT SUM(Punkte) As RestPunkte, SUM(Races) AS RestRennen FROM (
-SELECT SUM(rank_points.Punkte) AS Punkte, COUNT(DISTINCT championship.RaceID) AS Races 
-FROM (championship INNER JOIN races ON (races.ID = championship.RaceID)) LEFT JOIN tracks ON tracks.ID = races.TrackID LEFT JOIN race_results ON race_results.RaceID = championship.RaceID LEFT JOIN rank_points ON rank_points.Scoring = championship.Race_Scoring
-WHERE (championship.Bezeichnung = '$championship_name') AND (championship.Saison = $season) AND (championship.Kategorie = $category OR $category = -1) AND (race_results.Finish IS NULL) 
-AND ((rank_points.Saison <= championship.Saison) OR (rank_points.Saison = 0)) AND ((rank_points.Mileage = championship.Mileage) OR (rank_points.Mileage = 0)) AND (rank_points.Wert = 1)
-UNION ALL SELECT SUM(stage_points.Punkte) AS Punkte, 0 AS Races 
-FROM (championship INNER JOIN races ON (races.ID = championship.RaceID)) LEFT JOIN tracks ON tracks.ID = races.TrackID LEFT JOIN stage_results ON stage_results.RaceID = championship.RaceID LEFT JOIN stage_points ON stage_points.Scoring = championship.Stage_Scoring
-WHERE (championship.Bezeichnung = '$championship_name') AND (championship.Saison = $season) AND (championship.Kategorie = $category OR $category = -1) AND (stage_results.Position IS NULL) 
-AND ((stage_points.Saison <= championship.Saison) OR (stage_points.Saison = 0)) AND ((stage_points.Mileage = championship.Mileage) OR (stage_points.Mileage = 0)) AND (stage_points.Wert = 1)
-UNION ALL SELECT SUM(sprint_points.Punkte) AS Punkte, 0 AS Races 
-FROM (championship INNER JOIN races ON (races.ID = championship.RaceID)) LEFT JOIN tracks ON tracks.ID = races.TrackID LEFT JOIN sprint_results ON sprint_results.RaceID = championship.RaceID LEFT JOIN sprint_points ON sprint_points.Scoring = championship.Sprint_Scoring
-WHERE (championship.Bezeichnung = '$championship_name') AND (championship.Saison = $season) AND (championship.Kategorie = $category OR $category = -1) AND (sprint_results.Finish IS NULL) 
-AND ((sprint_points.Saison <= championship.Saison) OR (sprint_points.Saison = 0)) AND ((sprint_points.Mileage = championship.Mileage) OR (sprint_points.Mileage = 0)) AND (sprint_points.Wert = 1)
-UNION ALL SELECT SUM(bonus_points.Punkte) AS Punkte, 0 AS Races 
-FROM (championship INNER JOIN races ON (races.ID = championship.RaceID)) LEFT JOIN tracks ON tracks.ID = races.TrackID LEFT JOIN race_results ON race_results.RaceID = championship.RaceID LEFT JOIN bonus_points ON bonus_points.Scoring = championship.Bonus_Scoring
-WHERE (championship.Bezeichnung = '$championship_name') AND (championship.Saison = $season) AND (championship.Kategorie = $category OR $category = -1) AND (race_results.Finish IS NULL) 
-AND ((bonus_points.Saison <= championship.Saison) OR (bonus_points.Saison = 0)) AND ((bonus_points.Mileage = championship.Mileage) OR (bonus_points.Mileage = 0)) AND (bonus_points.Wert = 1)
-) As TempTable
-";
-$recordset3 = $database_connection->query($query3);
-$result3 = $recordset3->fetch_assoc();
-if ($result3) {$points_left = $result3['RestPunkte'];} else {$points_left = 0;}
-$races_left = $result3['RestRennen'];
-$race_color = 'white';
-if (($points_left + $points) < $points_max) {$race_color = 'darkgrey';}
-else {$race_color = 'lightgrey';}
-
-if ($i == 1) {$race_color = 'palegreen';}
-if (($i > 1) && ($points - $points_max == 0)) {$race_color = 'khaki';}
-
-print"<TR bgcolor ='$race_color'>";
-	print'<TH><FONT >'.$i.'</FONT></TH>';
-	print"<TD align='left'><FONT ><a href='../driver/driver.php?ID=".$driverID."'>".$row['Display_Name'].'</a></FONT></TD>';
-	print'<TD><FONT >'.$points.'</FONT></TD>';
-	if ($i == 1) {print'<TD><FONT >--</FONT></TD>';} else {print'<TD><FONT >'.($points-$points_max).'</FONT></TD>';}
-	print'<TD><FONT >'.($row['Rennpunkte']).'</FONT></TD>';
-	print'<TD><FONT >'.($row['Sprintpunkte']).'</FONT></TD>';
-	print'<TD><FONT >'.($row['Stagepunkte']).'</FONT></TD>';
-	print'<TD><FONT >'.($row['Bonuspunkte']).'</FONT></TD>';
-print'</TR>';
+	if ($i == 2) {
+		$interval = $row['Punkte'] - $maxpoints;
+		print"<tr bgcolor = '$track_color1'>";
+			print'<TD width = "50%"><FONT >'.$champ.'</FONT></TD>';
+			print'<TD width = "25%"><FONT >'.$maxpoints.'</FONT></TD>';
+			print'<TD width = "25%"><FONT >'.$interval.'</FONT></TD>';
+		print'</TR>';
+	}
 }
-print'<TR>';
-	if ($points_left > 0) {
-	print'<TD colspan="2"><FONT>Noch zu fahrende Rennen: <b>'.$races_left.'</b></FONT></TD>';
-	print'<TD colspan="6"><FONT>Noch zu vergebende Meisterschaftspunkte: <b>'.$points_left.'</b></FONT></TD>';}
-print'</TR>';
+print "</table>";
+print "</td>";
+}
 ?>
-</TABLE>
-</TD>
-</TR>
-</TABLE>
+</table>
+</p>
+</td>
+</tr>
+</table>
+</p>
 <br/>
-<?php
-print '<p>';
-print '</p>';
-print '<p align="center">';
-print "<a href='?Champ=".$championship_name."&Saison=".($season - 1)."&Kategorie=".$category."'>Vorherige Saison</a>";
-print "&nbsp&nbsp&nbsp&nbsp&nbsp;";
-print "<a href='index.php'>Zur&uuml;ck zum Index</a>";
-print "&nbsp&nbsp&nbsp&nbsp&nbsp;";
-print "<a href='?Champ=".$championship_name."&Saison=".($season + 1)."&Kategorie=".$category."'>Nachfolgende Saison</a>";
-?>
+<p align="center">
+<a href='../index.php'>Zur&uuml;ck zum Index</a>
 </p>
 </body>
 </html>

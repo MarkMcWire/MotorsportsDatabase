@@ -35,89 +35,23 @@ print '<TR>';
 	$raceID = $result['ID'];
 	print "<TH bgcolor= $track_color><a href='../championship/raceresult.php?ID=".$raceID."&Champ=".$championship_name."'>".$result['StreckenKz']."</a></TH>";
 	}
-	print'<TH><FONT>Points</FONT></TH>';
 print '</TR>';
 
 include("verbindung.php");
-$query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.Display_Name, (SUM(TT.Punkte) + SUM(TT.Bonuspunkte)) AS Punkte, SUM(TT.Bonuspunkte) AS Bonuspunkte, GROUP_CONCAT(LPAD(TT.Finish, 2, '0') ORDER BY TT.Finish) AS Platzierungen
+$query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.Display_Name, GROUP_CONCAT(LPAD(TT.Finish, 2, '0') ORDER BY TT.Finish) AS Platzierungen
 	FROM (
-	SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie,
-	race_results.DriverID, race_results.Finish AS Finish, 0 AS Punkte, 0 AS Bonuspunkte
+	SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.DriverID, race_results.Finish AS Finish
 	FROM race_results LEFT JOIN championship ON championship.RaceID = race_results.RaceID
 	WHERE (championship.Bezeichnung LIKE '".$championship_name."') AND (championship.Saison = ".$season.") AND (championship.Kategorie = ".$category.")
 	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.RaceID, race_results.DriverID, race_results.Finish 
-	UNION ALL SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie,
-	race_results.DriverID, NULL AS Finish, SUM(rank_points.Punkte) AS Punkte, 0 AS Bonuspunkte
-	FROM race_results LEFT JOIN championship ON championship.RaceID = race_results.RaceID
-	LEFT JOIN rank_points ON rank_points.Scoring = championship.Race_Scoring 
-	WHERE (championship.Bezeichnung LIKE '".$championship_name."') AND (championship.Saison = ".$season.") AND (championship.Kategorie = ".$category.")
-	AND ((rank_points.Saison <= championship.Saison) OR (rank_points.Saison = 0)) AND ((rank_points.Mileage = championship.Mileage) OR (rank_points.Mileage = 0)) AND (rank_points.Wert = race_results.Finish)
-	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.RaceID, race_results.DriverID
-	UNION ALL SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie,
-	sprint_results.DriverID, NULL AS Finish, SUM(sprint_points.Punkte) AS Punkte, 0 AS Bonuspunkte
-	FROM sprint_results LEFT JOIN championship ON championship.RaceID = sprint_results.RaceID
-	LEFT JOIN sprint_points ON sprint_points.Scoring = championship.Sprint_Scoring 
-	WHERE (championship.Bezeichnung LIKE '".$championship_name."') AND (championship.Saison = ".$season.") AND (championship.Kategorie = ".$category.")
-	AND ((sprint_points.Saison <= championship.Saison) OR (sprint_points.Saison = 0)) AND ((sprint_points.Mileage = championship.Mileage) OR (sprint_points.Mileage = 0)) AND (sprint_points.Wert = sprint_results.Finish)
-	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, sprint_results.RaceID, sprint_results.DriverID
-	UNION ALL SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie,
-	stage_results.DriverID, NULL AS Finish, SUM(stage_points.Punkte) AS Punkte, 0 AS Bonuspunkte
-	FROM stage_results LEFT JOIN championship ON championship.RaceID = stage_results.RaceID
-	LEFT JOIN stage_points ON stage_points.Scoring = championship.Stage_Scoring 
-	WHERE (championship.Bezeichnung LIKE '".$championship_name."') AND (championship.Saison = ".$season.") AND (championship.Kategorie = ".$category.")
-	AND ((stage_points.Saison <= championship.Saison) OR (stage_points.Saison = 0)) AND ((stage_points.Mileage = championship.Mileage) OR (stage_points.Mileage = 0)) AND (stage_points.Wert = stage_results.Position)
-	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, stage_results.RaceID, stage_results.DriverID
-	UNION ALL SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie,
-	race_results.DriverID, NULL AS Finish, 0 AS Punkte, SUM(bonus_points.Punkte) AS Bonuspunkte
-	FROM race_results LEFT JOIN championship ON championship.RaceID = race_results.RaceID 
-	LEFT JOIN bonus_points ON bonus_points.Scoring = championship.Bonus_Scoring
-	WHERE (championship.Bezeichnung LIKE '".$championship_name."') AND (championship.Saison = ".$season.") AND (championship.Kategorie = ".$category.")
-	AND ((bonus_points.Saison <= championship.Saison) OR (bonus_points.Saison = 0)) AND ((bonus_points.Mileage = championship.Mileage) OR (bonus_points.Mileage = 0)) AND (race_results.LedLapFinish > 0) AND (bonus_points.Bewertung = 'LLF')
-	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.RaceID, race_results.DriverID
-	UNION ALL SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie,
-	race_results.DriverID, NULL AS Finish, 0 AS Punkte, SUM(bonus_points.Punkte) AS Bonuspunkte
-	FROM race_results LEFT JOIN championship ON championship.RaceID = race_results.RaceID 
-	LEFT JOIN bonus_points ON bonus_points.Scoring = championship.Bonus_Scoring
-	WHERE (championship.Bezeichnung LIKE '".$championship_name."') AND (championship.Saison = ".$season.") AND (championship.Kategorie = ".$category.")
-	AND ((bonus_points.Saison <= championship.Saison) OR (bonus_points.Saison = 0)) AND ((bonus_points.Mileage = championship.Mileage) OR (bonus_points.Mileage = 0)) AND (race_results.FastestRaceLap > 0) AND (bonus_points.Bewertung = 'FL')
-	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.RaceID, race_results.DriverID
-	UNION ALL SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie,
-	race_results.DriverID, NULL AS Finish, 0 AS Punkte, SUM(bonus_points.Punkte) AS Bonuspunkte
-	FROM race_results LEFT JOIN championship ON championship.RaceID = race_results.RaceID 
-	LEFT JOIN bonus_points ON bonus_points.Scoring = championship.Bonus_Scoring
-	WHERE (championship.Bezeichnung LIKE '".$championship_name."') AND (championship.Saison = ".$season.") AND (championship.Kategorie = ".$category.")
-	AND ((bonus_points.Saison <= championship.Saison) OR (bonus_points.Saison = 0)) AND ((bonus_points.Mileage = championship.Mileage) OR (bonus_points.Mileage = 0)) AND (race_results.MostPositionsGained > 0) AND (bonus_points.Bewertung = 'MPG')
-	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.RaceID, race_results.DriverID
-	UNION ALL SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie,
-	race_results.DriverID, NULL AS Finish, 0 AS Punkte, SUM(bonus_points.Punkte) AS Bonuspunkte
-	FROM race_results LEFT JOIN championship ON championship.RaceID = race_results.RaceID 
-	LEFT JOIN bonus_points ON bonus_points.Scoring = championship.Bonus_Scoring
-	WHERE (championship.Bezeichnung LIKE '".$championship_name."') AND (championship.Saison = ".$season.") AND (championship.Kategorie = ".$category.")
-	AND ((bonus_points.Saison <= championship.Saison) OR (bonus_points.Saison = 0)) AND ((bonus_points.Mileage = championship.Mileage) OR (bonus_points.Mileage = 0)) AND (race_results.MostLapsLed > 0) AND (bonus_points.Bewertung = 'MLL')
-	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.RaceID, race_results.DriverID
-	UNION ALL SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie,
-	race_results.DriverID, NULL AS Finish, 0 AS Punkte, SUM(bonus_points.Punkte) AS Bonuspunkte
-	FROM race_results LEFT JOIN championship ON championship.RaceID = race_results.RaceID 
-	LEFT JOIN bonus_points ON bonus_points.Scoring = championship.Bonus_Scoring
-	WHERE (championship.Bezeichnung LIKE '".$championship_name."') AND (championship.Saison = ".$season.") AND (championship.Kategorie = ".$category.")
-	AND ((bonus_points.Saison <= championship.Saison) OR (bonus_points.Saison = 0)) AND ((bonus_points.Mileage = championship.Mileage) OR (bonus_points.Mileage = 0)) AND (race_results.Led > 0) AND (bonus_points.Bewertung = 'LL')
-	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.RaceID, race_results.DriverID
-	UNION ALL SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie,
-	race_results.DriverID, NULL AS Finish, 0 AS Punkte, SUM(penalties.Points) AS Bonuspunkte
-	FROM race_results LEFT JOIN championship ON championship.RaceID = race_results.RaceID 
-	LEFT JOIN penalties ON penalties.RaceID = race_results.RaceID
-	WHERE (championship.Bezeichnung LIKE '".$championship_name."') AND (championship.Saison = ".$season.") AND (championship.Kategorie = ".$category.")
-	AND (penalties.DriverID = race_results.DriverID)
-	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.RaceID, race_results.DriverID
 	) AS TT INNER JOIN drivers ON drivers.ID = TT.DriverID
 	GROUP BY TT.Saison, TT.Bezeichnung, TT.Kategorie, TT.DriverID, drivers.Display_Name
-	ORDER BY TT.Saison, TT.Bezeichnung, TT.Kategorie, Punkte DESC, Platzierungen";
+	ORDER BY TT.Saison, TT.Bezeichnung, TT.Kategorie, Platzierungen";
 $recordset0 = $database_connection->query($query0);
 $i = 0;
 while ($row = $recordset0->fetch_assoc())
 {
 $i = $i + 1;
-$points = $row['Punkte'];
 $driverID = $row['DriverID'];
 
 print'<TR>';
@@ -152,7 +86,6 @@ print'<TR>';
 	if ($mll == 0 && $frl == 0 && $start >= 0) {print "<TD bgcolor= $result_color align='center'>".$finish."</TD>";}
 	if ($start < 0) {print "<TD bgcolor='white' align='center'></TD>";}
 	}
-	print'<TD><FONT >'.$points.'</FONT></TD>';
 print'</TR>';
 }
 ?>

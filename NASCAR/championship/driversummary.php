@@ -85,8 +85,11 @@ $race_color = 'white';
 $points = 0;
 $points_max = 0;
 
-if ($i == 1) {$race_color = 'palegreen';}
-if (($i > 1) && ($points - $points_max == 0)) {$race_color = 'lightgrey';}
+include("verbindung.php");
+$query3 = "SELECT MAX(Saison) AS MaxSeason FROM championship";
+$recordset3 = $database_connection->query($query3);
+$result3 = $recordset3->fetch_assoc();
+if ($result3['MaxSeason'] > $season) {$race_color = 'darkgrey';} else {$race_color = 'lightgrey';}
 
 print"<TR bgcolor ='$race_color'>";
 	print'<TH><FONT >'.$i.'</FONT></TH>';

@@ -47,7 +47,7 @@ $query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.
 	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.RaceID, race_results.DriverID, race_results.Finish 
 	) AS TT INNER JOIN drivers ON drivers.ID = TT.DriverID
 	GROUP BY TT.Saison, TT.Bezeichnung, TT.Kategorie, TT.DriverID, drivers.Display_Name
-	ORDER BY TT.Saison, TT.Bezeichnung, TT.Kategorie, Platzierungen";
+	ORDER BY TT.Saison, TT.Bezeichnung, TT.Kategorie, AvgFinish";
 $recordset0 = $database_connection->query($query0);
 $i = 0;
 while ($row = $recordset0->fetch_assoc())

@@ -22,6 +22,7 @@ print '<h3>Fahrer&uuml;bersicht '.$season.'</h3>';
 	<TH rowspan="2"><FONT>Position</FONT></TH>
 	<TH align="left" rowspan="2"><FONT >Driver</FONT></TH>
 	<TH rowspan="2"><FONT >Races</FONT></TH>
+	<TH rowspan="2"><FONT >Avg Finish</FONT></TH>
 	<TH rowspan="2"><FONT >Wins</FONT></TH>
 	<TH rowspan="2"><FONT >Top 5</FONT></TH>
 	<TH rowspan="2"><FONT >Top 10</FONT></TH>
@@ -38,7 +39,7 @@ print '<h3>Fahrer&uuml;bersicht '.$season.'</h3>';
 </TR>
 <?php
 include("verbindung.php");
-$query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.Display_Name, GROUP_CONCAT(LPAD(TT.Finish, 2, '0') ORDER BY TT.Finish) AS Platzierungen
+$query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.Display_Name, GROUP_CONCAT(LPAD(TT.Finish, 2, '0') ORDER BY TT.Finish) AS Platzierungen, AVG(TT.Finish) AS AvgFinish
 	FROM (
 	SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.DriverID, race_results.Finish AS Finish
 	FROM race_results LEFT JOIN championship ON championship.RaceID = race_results.RaceID
@@ -70,6 +71,7 @@ GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie";
 $recordset1 = $database_connection->query($query1);
 $result1 = $recordset1->fetch_assoc();
 $events = $result1['Events'];
+$avgfinish = number_format($row['AvgFinish'], 2);
 $wins = $result1['Wins'];
 $top5 = $result1['Top5'];
 $top10 = $result1['Top10'];
@@ -95,6 +97,7 @@ print"<TR bgcolor ='$race_color'>";
 	print'<TH><FONT >'.$i.'</FONT></TH>';
 	print"<TD align='left'><FONT ><a href='../driver/driver.php?ID=".$driverID."'>".$row['Display_Name'].'</a></FONT></TD>';
 	print'<TD><FONT >'.$events.'</FONT></TD>';
+	print'<TD><FONT >'.$avgfinish.'</FONT></TD>';
 	print'<TD><FONT >'.$wins.'</FONT></TD>';
 	print'<TD><FONT >'.$top5.'</FONT></TD>';
 	print'<TD><FONT >'.$top10.'</FONT></TD>';

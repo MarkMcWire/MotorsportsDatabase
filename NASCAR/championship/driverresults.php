@@ -35,10 +35,11 @@ print '<TR>';
 	$raceID = $result['ID'];
 	print "<TH bgcolor= $track_color><a href='../championship/raceresult.php?ID=".$raceID."&Champ=".$championship_name."'>".$result['StreckenKz']."</a></TH>";
 	}
+	print'<TH><FONT>Avg. Finish</FONT></TH>';
 print '</TR>';
 
 include("verbindung.php");
-$query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.Display_Name, GROUP_CONCAT(LPAD(TT.Finish, 2, '0') ORDER BY TT.Finish) AS Platzierungen
+$query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.Display_Name, GROUP_CONCAT(LPAD(TT.Finish, 2, '0') ORDER BY TT.Finish) AS Platzierungen, AVG(TT.Finish) AS AvgFinish
 	FROM (
 	SELECT championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.DriverID, race_results.Finish AS Finish
 	FROM race_results LEFT JOIN championship ON championship.RaceID = race_results.RaceID
@@ -46,12 +47,13 @@ $query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.
 	GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie, race_results.RaceID, race_results.DriverID, race_results.Finish 
 	) AS TT INNER JOIN drivers ON drivers.ID = TT.DriverID
 	GROUP BY TT.Saison, TT.Bezeichnung, TT.Kategorie, TT.DriverID, drivers.Display_Name
-	ORDER BY TT.Saison, TT.Bezeichnung, TT.Kategorie, Platzierungen";
+	ORDER BY TT.Saison, TT.Bezeichnung, TT.Kategorie, AvgFinish, Platzierungen";
 $recordset0 = $database_connection->query($query0);
 $i = 0;
 while ($row = $recordset0->fetch_assoc())
 {
 $i = $i + 1;
+$avgfinish = number_format($row['AvgFinish'], 2);
 $driverID = $row['DriverID'];
 
 print'<TR>';
@@ -86,6 +88,7 @@ print'<TR>';
 	if ($mll == 0 && $frl == 0 && $start >= 0) {print "<TD bgcolor= $result_color align='center'>".$finish."</TD>";}
 	if ($start < 0) {print "<TD bgcolor='white' align='center'></TD>";}
 	}
+	print'<TD><FONT >'.$avgfinish.'</FONT></TD>';
 print'</TR>';
 }
 ?>

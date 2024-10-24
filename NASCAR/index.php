@@ -66,7 +66,7 @@
 	<TR>
 		<TD><FONT><a href='championship/seasons.php'>Saison&uuml;bersicht nach Jahr</a></FONT></TD>
 		<TD><FONT><a href='championship/index.php'>Saison&uuml;bersicht nach Meisterschaft</a></FONT></TD>
-		<TD><FONT><a href='statistics/points_scoring.php?Ranks=1000&Points=1000&Bonus=all&Type=all'>Punktewertung</a></FONT></TD>
+		<TD><FONT><a href='http://localhost/phpmyadmin/index.php'>Datenbank Admin</a></FONT></TD>
 		<TD><FONT><a href='tracks/index.php'>Liste der Rennstrecken</a></FONT></TD>
 		<TD><FONT><a href='tracks/tracks_tracktype.php'>Liste der Streckentypen</a></FONT></TD>
 	</TR>

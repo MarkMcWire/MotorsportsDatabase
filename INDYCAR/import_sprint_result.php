@@ -174,7 +174,7 @@ if(isset($_POST["Import"])) {
 	$sql_race_laps = "UPDATE races LEFT JOIN (SELECT RaceID, MAX(Laps) AS MaxLaps FROM sprint_results GROUP BY RaceID) AS TempTable ON TempTable.RaceID = races.ID SET races.Runden = TempTable.MaxLaps WHERE TempTable.MaxLaps > races.Runden;";
 	$result = mysqli_query($database_connection, $sql_race_laps);
 	
-	$sql_update_sprint_scoring = "UPDATE championship SET championship.Sprint_Scoring = 1 WHERE RaceID IN (SELECT RaceID FROM sprint_results);";
+	$sql_update_sprint_scoring = "UPDATE championship SET championship.Sprint_Scoring = 11 WHERE RaceID IN (SELECT RaceID FROM sprint_results);";
 	$result = mysqli_query($database_connection, $sql_update_sprint_scoring);
 	
 	echo "<script type=\"text/javascript\">

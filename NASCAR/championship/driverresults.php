@@ -33,7 +33,7 @@ print '<TR>';
 	$track_color= 'white';
 	$track_color= $result['ColorCode'];
 	$raceID = $result['ID'];
-	print "<TH bgcolor= $track_color><a href='../championship/raceresult.php?ID=".$raceID."&Champ=".$championship_name."'>".$result['StreckenKz']."</a></TH>";
+	print "<TH bgcolor=$track_color colspan='2'><a href='../championship/raceresult.php?ID=".$raceID."&Champ=".$championship_name."'>".$result['StreckenKz']."</a></TH>";
 	}
 	print'<TH><FONT>Avg. Finish</FONT></TH>';
 print '</TR>';
@@ -80,13 +80,24 @@ print'<TR>';
 	$mll = $result['MLL'];
 	$frl = $result['FRL'];
 	$status = $result['Status'];
-	$result_color = $result['ColorCode'];;
-	if ($finish < 1 or $finish > 99) {$result_color= 'white'; $finish = '';}
-	if ($mll == 1 && $frl == 1 && $start >= 0) {print "<TD bgcolor= $result_color align='center'><B><I>".$finish."</I></B></TD>";}
-	if ($mll == 1 && $frl == 0 && $start >= 0) {print "<TD bgcolor= $result_color align='center'><B>".$finish."</B></TD>";}
-	if ($mll == 0 && $frl == 1 && $start >= 0) {print "<TD bgcolor= $result_color align='center'><I>".$finish."</I></TD>";}
-	if ($mll == 0 && $frl == 0 && $start >= 0) {print "<TD bgcolor= $result_color align='center'>".$finish."</TD>";}
-	if ($start < 0) {print "<TD bgcolor='white' align='center'></TD>";}
+	$bonus = '';
+	if ($start == 1) {$bonus = $bonus.'P'; };
+	if ($mll > 0) {$bonus = $bonus.'L'; };
+	if ($frl > 0) {$bonus = $bonus.'F'; };
+	$result_color = $result['ColorCode'];
+	if ($finish > 0 and $finish < 100 and strlen($bonus) > 0) 
+		{
+			print "<TD bgcolor=$result_color align='center'>".$finish."</TD>";
+			print "<TD bgcolor=$result_color align='center'>".$bonus."</TD>";
+		} 
+	elseif ($finish > 0 and $finish < 100)
+		{
+			print "<TD bgcolor=$result_color align='center' colspan='2'>".$finish."</TD>";
+		}
+	else 
+		{
+			print "<TD bgcolor='white' align='center' colspan='2'></TD>";
+		}
 	}
 	print'<TD><FONT >'.$avgfinish.'</FONT></TD>';
 print'</TR>';

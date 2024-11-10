@@ -13,6 +13,7 @@ if(isset($_POST["Import"])) {
 				while (($getData = fgetcsv($file, 10000, ",")) !== FALSE) {
 					if ($getData[0] == 'RaceID' || $getData[1] == 'RaceID') {
 						$index_raceid = 0;
+						$index_sprintid = 0;
 						$index_finish = 0;
 						$index_start = 0;
 						$index_qualification = 0;
@@ -32,6 +33,10 @@ if(isset($_POST["Import"])) {
 							if ($index_raceid == 0 && (str_contains(strtolower($val), "raceid") || str_contains(strtolower($val), "RaceID"))) {
 								$index_raceid = $key;
 								echo "RaceID: ".$index_raceid."\n";
+							}
+							if ($index_sprintid == 0 && (str_contains(strtolower($val), "sprint") || str_contains(strtolower($val), "heat"))) {
+								$index_sprintid = $key;
+								echo "SprintID: ".$index_sprintid."\n";
 							}
 							if ($index_finish == 0 && (str_contains(strtolower($val), "pos") || str_contains(strtolower($val), "fin") || str_contains(strtolower($val), "rank"))) {
 								$index_finish = $key;
@@ -128,12 +133,22 @@ if(isset($_POST["Import"])) {
 						
 						$result_id = 0;
 						if (strlen($status) > 1) {$dnf = 1-(int)str_contains($status, 'running');} else {$status = 'dnf'; $dnf = '1';}
-						$result_id_result = $database_connection->query("SELECT RaceID, Finish FROM race_results WHERE (RaceID = ".$raceID.") AND (Finish = ".$finish_pos.")"); 
-						if (!($result_id_result->fetch_assoc())) { 
-							$sql_insert_race_result = "INSERT into race_results (RaceID, Car, DriverID, Finish, Start, Laps, Led, FastestRaceLap, Status, DNF)
-							values ('".$raceID."','".$car_number."','".$driverID."','".$finish_pos."','".$start_pos."','".$laps."','".$led."','".$frl."','".$status."','".$dnf."')";
-							//print($sql_insert_race_result);print"<br/>";
-							$result = mysqli_query($database_connection, $sql_insert_race_result);
+						if ($index_sprintid > 0) {
+							$result_id_result = $database_connection->query("SELECT RaceID, Finish FROM sprint_results WHERE (RaceID = ".$raceID.") AND (SprintID = ".$sprintID.") AND (Finish = ".$finish_pos.")"); 
+							if (!($result_id_result->fetch_assoc())) { 
+								$sql_insert_race_result = "INSERT into sprint_results (RaceID, SprintID, Car, DriverID, Finish, Start, Laps, Led, FastestRaceLap, Status, DNF)
+								values ('".$raceID."','".$sprintID."','".$car_number."','".$driverID."','".$finish_pos."','".$start_pos."','".$laps."','".$led."','".$frl."','".$status."','".$dnf."')";
+								//print($sql_insert_race_result);print"<br/>";
+								$result = mysqli_query($database_connection, $sql_insert_race_result);
+							}
+						} else {
+							$result_id_result = $database_connection->query("SELECT RaceID, Finish FROM race_results WHERE (RaceID = ".$raceID.") AND (Finish = ".$finish_pos.")"); 
+							if (!($result_id_result->fetch_assoc())) { 
+								$sql_insert_race_result = "INSERT into race_results (RaceID, Car, DriverID, Finish, Start, Laps, Led, FastestRaceLap, Status, DNF)
+								values ('".$raceID."','".$car_number."','".$driverID."','".$finish_pos."','".$start_pos."','".$laps."','".$led."','".$frl."','".$status."','".$dnf."')";
+								//print($sql_insert_race_result);print"<br/>";
+								$result = mysqli_query($database_connection, $sql_insert_race_result);
+							}
 						}
 					}
 				}
@@ -168,8 +183,37 @@ if(isset($_POST["Import"])) {
 	$sql_race_laps = "UPDATE races LEFT JOIN (SELECT RaceID, MAX(Laps) AS MaxLaps FROM race_results GROUP BY RaceID) AS TempTable ON TempTable.RaceID = races.ID SET races.Runden = TempTable.MaxLaps WHERE TempTable.MaxLaps > races.Runden;";
 	$result = mysqli_query($database_connection, $sql_race_laps);
 	
+	$sql_update_race_result_dnf1 = "UPDATE sprint_results SET STATUS = 'dnf' WHERE Status = '–';";
+	$result = mysqli_query($database_connection, $sql_update_race_result_dnf1);
+	$sql_update_race_result_dnf2 = "UPDATE sprint_results SET STATUS = 'Running' WHERE (Status like 'running') or (Status like '%Flagged%') or (Status like '%:%') or (Status like '%.%') or (Status like '%+%') or (Status REGEXP '^[[:digit:]]+$');";
+	$result = mysqli_query($database_connection, $sql_update_race_result_dnf2);
+	$sql_update_race_result_dnf3 = "UPDATE sprint_results SET STATUS = 'dnf' WHERE Status = '–';";
+	$result = mysqli_query($database_connection, $sql_update_race_result_dnf3);
+	$sql_update_race_result_dnf4 = "UPDATE sprint_results SET Status = LCASE(Status) WHERE Status NOT LIKE 'Running';";
+	$result = mysqli_query($database_connection, $sql_update_race_result_dnf4);
+	$sql_update_race_result_dnf5a = "UPDATE sprint_results SET DNF = 1 WHERE Status <> 'Running';";
+	$result = mysqli_query($database_connection, $sql_update_race_result_dnf5a);
+	$sql_update_race_result_dnf5b = "UPDATE sprint_results SET DNF = 0 WHERE Status LIKE 'Running';";
+	$result = mysqli_query($database_connection, $sql_update_race_result_dnf5b);
+	$sql_update_race_result_llf1 = "UPDATE sprint_results INNER JOIN (SELECT RaceID, MAX(Laps) AS LLF FROM sprint_results GROUP BY RaceID) AS LLFtemp ON sprint_results.RaceID = LLFtemp.RaceID SET sprint_results.LedLapFinish = 1 WHERE (sprint_results.RaceID = LLFtemp.RaceID) AND (sprint_results.Laps = LLFtemp.LLF) AND (sprint_results.Laps > 0);";
+	$result = mysqli_query($database_connection, $sql_update_race_result_llf1);
+	$sql_update_race_result_llf2 = "UPDATE sprint_results INNER JOIN (SELECT RaceID, MAX(Laps) AS LLF FROM sprint_results GROUP BY RaceID) AS LLFtemp ON sprint_results.RaceID = LLFtemp.RaceID SET sprint_results.LedLapFinish = 0 WHERE (sprint_results.RaceID = LLFtemp.RaceID) AND (sprint_results.Laps <> LLFtemp.LLF) OR (sprint_results.Laps = 0);";
+	$result = mysqli_query($database_connection, $sql_update_race_result_llf2);
+	$sql_update_race_result_mll1 = "UPDATE sprint_results INNER JOIN (SELECT RaceID, MAX(Led) AS MLL FROM sprint_results GROUP BY RaceID) AS MLLtemp ON sprint_results.RaceID = MLLtemp.RaceID SET sprint_results.MostLapsLed = 1 WHERE (sprint_results.RaceID = MLLtemp.RaceID) AND (sprint_results.Led = MLLtemp.MLL) AND (sprint_results.Led > 0);";
+	$result = mysqli_query($database_connection, $sql_update_race_result_mll1);
+	$sql_update_race_result_mll2 = "UPDATE sprint_results INNER JOIN (SELECT RaceID, MAX(Led) AS MLL FROM sprint_results GROUP BY RaceID) AS MLLtemp ON sprint_results.RaceID = MLLtemp.RaceID SET sprint_results.MostLapsLed = 0 WHERE (sprint_results.RaceID = MLLtemp.RaceID) AND (sprint_results.Led <> MLLtemp.MLL) OR (sprint_results.Led = 0);";
+	$result = mysqli_query($database_connection, $sql_update_race_result_mll2);
+	$sql_update_race_result_mpg1 = "UPDATE sprint_results INNER JOIN (SELECT RaceID, MAX(Start-Finish) AS MPG FROM sprint_results GROUP BY RaceID) AS MPGtemp ON sprint_results.RaceID = MPGtemp.RaceID SET sprint_results.MostPositionsGained = 1 WHERE (sprint_results.RaceID = MPGtemp.RaceID) AND ((sprint_results.Start-sprint_results.Finish) = MPGtemp.MPG);";
+	$result = mysqli_query($database_connection, $sql_update_race_result_mpg1);
+	$sql_update_race_result_mpg2 = "UPDATE sprint_results INNER JOIN (SELECT RaceID, MAX(Start-Finish) AS MPG FROM sprint_results GROUP BY RaceID) AS MPGtemp ON sprint_results.RaceID = MPGtemp.RaceID SET sprint_results.MostPositionsGained = 0 WHERE (sprint_results.RaceID = MPGtemp.RaceID) AND ((sprint_results.Start-sprint_results.Finish) <> MPGtemp.MPG);";
+	$result = mysqli_query($database_connection, $sql_update_race_result_mpg2);
+	$sql_race_laps = "UPDATE races LEFT JOIN (SELECT RaceID, MAX(Laps) AS MaxLaps FROM sprint_results GROUP BY RaceID) AS TempTable ON TempTable.RaceID = races.ID SET races.Runden = TempTable.MaxLaps WHERE TempTable.MaxLaps > races.Runden;";
+	$result = mysqli_query($database_connection, $sql_race_laps);
+	
 	$sql_update_race_scoring = "UPDATE championship SET championship.Race_Scoring = championship.Cars + 1 WHERE RaceID IN (SELECT RaceID FROM race_results);";
 	$result = mysqli_query($database_connection, $sql_update_race_scoring);
+	$sql_update_sprint_scoring = "UPDATE championship SET championship.Sprint_Scoring = 11 WHERE RaceID IN (SELECT RaceID FROM sprint_results);";
+	$result = mysqli_query($database_connection, $sql_update_sprint_scoring);
 	
 	echo "<script type=\"text/javascript\">
 			alert(\"CSV files has been successfully imported.\");

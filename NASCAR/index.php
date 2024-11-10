@@ -104,29 +104,6 @@
 				</fieldset>
 			</form>
 		</TD>
-		<TD colspan="1">
-			<form class="form-horizontal" action="import_sprint_result.php" method="post" name="upload_excel" enctype="multipart/form-data">
-				<fieldset>
-					<!-- Form Name -->
-					<legend><b>Import Sprint Results</b></legend>
-					<!-- File Button -->
-					<div class="form-group">
-						<label class="col-md-4 control-label" for="filebutton">Select File</label>
-						<br/>
-						<div class="col-md-4">
-							<input type="file" name="file[]" id="file" class="input-large" multiple>
-						</div>
-					</div>
-					<br/>
-					<!-- Button -->
-					<div class="form-group">
-						<div class="col-md-4">
-							<button type="submit" id="submit" name="Import" value = "" class="btn btn-primary button-loading" data-loading-text="Loading...">Import Sprint Race Data</button>
-						</div>
-					</div>
-				</fieldset>
-			</form>
-		</TD>
 		<TD colspan="2">
 			<form class="form-horizontal" action="import_race_result.php" method="post" name="upload_excel" enctype="multipart/form-data">
 				<fieldset>
@@ -150,7 +127,7 @@
 				</fieldset>
 			</form>
 		</TD>
-		<TD colspan="1">
+		<TD colspan="2">
 			<form class="form-horizontal" action="import_stage_result.php" method="post" name="upload_excel" enctype="multipart/form-data">
 				<fieldset>
 					<!-- Form Name -->

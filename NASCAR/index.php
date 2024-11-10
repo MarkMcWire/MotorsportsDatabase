@@ -56,8 +56,8 @@
 		<TD colspan="5"><hr></TD>
 	</TR>
 	<TR>
-		<TD colspan="2"><FONT><a href='NTS.php'><img src="NTS.png" alt="NTS"></a></FONT></TD>
-		<TD colspan="1"><FONT><a href='NNWS.php'><img src="NNWS.png" alt="NNWS"></a></FONT></TD>
+		<TD colspan="1"><FONT><a href='NTS.php'><img src="NTS.png" alt="NTS"></a></FONT></TD>
+		<TD colspan="2"><FONT><a href='NNWS.php'><img src="NNWS.png" alt="NNWS"></a></FONT></TD>
 		<TD colspan="2"><FONT><a href='NCUP.php'><img src="NCUP.png" alt="NCUP"></a></FONT></TD>
 	</TR>
 	<TR>

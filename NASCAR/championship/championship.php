@@ -17,7 +17,7 @@
 <th>Rennen</th>
 <th>Distanz</th>
 <th colspan='1'>Ergebnisse</th>
-<th colspan='4'>Fahrer</th>
+<th colspan='5'>Fahrer</th>
 </tr>
 <?php
 if (isset($_GET["Champ"])) {$championship_name = $_GET["Champ"];} ELSE {$championship_name = $championship_name_global;}
@@ -61,6 +61,9 @@ print "<a href='championship/driversummary.php?Saison=".$season."&Champ=".$champ
 print "</td>";
 print "<td>";
 print "<a href='championship/driverresults.php?Saison=".$season."&Champ=".$championship_name."&Kategorie=".$category."'>Platzierungen ".$season."</a>";
+print "</td>";
+print "<td>";
+print "<a href='championship/driverpositions.php?Saison=".$season."&Champ=".$championship_name."&Kategorie=".$category."'>Positions&uuml;bersicht ".$season."</a>";
 print "</td>";
 print "<td>";
 print "<a href='championship/driversummary_points.php?Saison=".$season."&Champ=".$championship_name."&Kategorie=".$category."'>Punkte&uuml;bersicht ".$season."</a>";

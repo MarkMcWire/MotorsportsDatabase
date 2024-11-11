@@ -18,7 +18,7 @@
 <th>Rennen</th>
 <th>Distanz</th>
 <th colspan='1'>Ergebnisse</th>
-<th colspan='4'>Fahrer</th>
+<th colspan='5'>Fahrer</th>
 </tr>
 <?php
 include("verbindung.php");
@@ -59,6 +59,9 @@ print "<a href='driversummary.php?Saison=".$season."&Champ=".$championship_name.
 print "</td>";
 print "<td>";
 print "<a href='driverresults.php?Saison=".$season."&Champ=".$championship_name."&Kategorie=".$category."'>Platzierungen<br />".$championship_name.' '.$season."</a>";
+print "</td>";
+print "<td>";
+print "<a href='driverpositions.php?Saison=".$season."&Champ=".$championship_name."&Kategorie=".$category."'>Positions&uuml;bersicht<br />".$championship_name.' '.$season."</a>";
 print "</td>";
 print "<td>";
 print "<a href='driversummary_points.php?Saison=".$season."&Champ=".$championship_name."&Kategorie=".$category."'>Punkte&uuml;bersicht<br />".$championship_name.' '.$season."</a>";

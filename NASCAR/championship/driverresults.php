@@ -28,12 +28,11 @@ print '<TR>';
 		WHERE (championship.Saison = $season) and (championship.Bezeichnung = '$championship_name') and (championship.Kategorie = $category or championship.Kategorie = 0) and (championship.RaceID <= $race_id_global or $race_id_global = 0)
 		ORDER BY championship.Saison, races.ID";
 	$recordset1 = $database_connection->query($query1);
-	while ($result = $recordset1->fetch_assoc())
-	{
-	$track_color= 'white';
-	$track_color= $result['ColorCode'];
-	$raceID = $result['ID'];
-	print "<TH bgcolor=$track_color colspan='2'><a href='../championship/raceresult.php?ID=".$raceID."&Champ=".$championship_name."'>".$result['StreckenKz']."</a></TH>";
+	while ($result = $recordset1->fetch_assoc()) {
+		$track_color= 'white';
+		$track_color= $result['ColorCode'];
+		$raceID = $result['ID'];
+		print "<TH bgcolor=$track_color colspan='2'><a href='../championship/raceresult.php?ID=".$raceID."&Champ=".$championship_name."'>".$result['StreckenKz']."</a></TH>";
 	}
 	print'<TH><FONT>Best Finish</FONT></TH>';
 print '</TR>';
@@ -50,13 +49,12 @@ $query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.
 	ORDER BY TT.Saison, TT.Bezeichnung, TT.Kategorie, MinFinish, Platzierungen";
 $recordset0 = $database_connection->query($query0);
 $i = 0;
-while ($row = $recordset0->fetch_assoc())
-{
-$i = $i + 1;
-$avgfinish = number_format($row['MinFinish'], 0);
-$driverID = $row['DriverID'];
+while ($row = $recordset0->fetch_assoc()) {
+	$i = $i + 1;
+	$avgfinish = number_format($row['MinFinish'], 0);
+	$driverID = $row['DriverID'];
 
-print'<TR>';
+	print'<TR>';
 	print'<TH><FONT >'.$i.'</FONT></TH>';
 	print"<TD align='left'><FONT ><a href='../driver/driver.php?ID=".$driverID."'>".$row['Display_Name'].'</a></FONT></TD>';
 	include("verbindung.php");
@@ -73,34 +71,33 @@ print'<TR>';
 		GROUP BY races.ID, championship.Saison, championship.Bezeichnung, races.Datum
 		) as temptable GROUP BY DriverID, raceID ORDER BY raceID, Finish";
 	$recordset1 = $database_connection->query($query1);
-	while ($result = $recordset1->fetch_assoc())
-	{
-	$finish = $result['Finish'];
-	$start = $result['Start'];
-	$mll = $result['MLL'];
-	$frl = $result['FRL'];
-	$status = $result['Status'];
-	$bonus = '';
-	if ($start == 1) {$bonus = $bonus.'P'; };
-	if ($mll > 0) {$bonus = $bonus.'L'; };
-	if ($frl > 0) {$bonus = $bonus.'F'; };
-	$result_color = $result['ColorCode'];
-	if ($finish > 0 and $finish < 100 and strlen($bonus) > 0) 
-		{
-			print "<TD bgcolor=$result_color align='center'>".$finish."</TD>";
-			print "<TD bgcolor=$result_color align='center'>".$bonus."</TD>";
-		} 
-	elseif ($finish > 0 and $finish < 100)
-		{
-			print "<TD bgcolor=$result_color align='center' colspan='2'>".$finish."</TD>";
-		}
-	else 
-		{
-			print "<TD bgcolor='white' align='center' colspan='2'></TD>";
-		}
+	while ($result = $recordset1->fetch_assoc()) {
+		$finish = $result['Finish'];
+		$start = $result['Start'];
+		$mll = $result['MLL'];
+		$frl = $result['FRL'];
+		$status = $result['Status'];
+		$bonus = '';
+		if ($start == 1) {$bonus = $bonus.'P'; };
+		if ($mll > 0) {$bonus = $bonus.'L'; };
+		if ($frl > 0) {$bonus = $bonus.'F'; };
+		$result_color = $result['ColorCode'];
+		if ($finish > 0 and $finish < 100 and strlen($bonus) > 0) 
+			{
+				print "<TD bgcolor=$result_color align='center'>".$finish."</TD>";
+				print "<TD bgcolor=$result_color align='center'>".$bonus."</TD>";
+			} 
+		elseif ($finish > 0 and $finish < 100)
+			{
+				print "<TD bgcolor=$result_color align='center' colspan='2'>".$finish."</TD>";
+			}
+		else 
+			{
+				print "<TD bgcolor='white' align='center' colspan='2'></TD>";
+			}
 	}
 	print'<TD><FONT >'.$avgfinish.'</FONT></TD>';
-print'</TR>';
+	print'</TR>';
 }
 ?>
 </TABLE>

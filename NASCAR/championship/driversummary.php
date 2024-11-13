@@ -30,6 +30,7 @@ print '<h3>Fahrer&uuml;bersicht '.$season.'</h3>';
 	<TH rowspan="2"><FONT >Laps</FONT></TH>
 	<TH rowspan="2"><FONT >Led</FONT></TH>
 	<TH rowspan="2"><FONT >Led%</FONT></TH>
+	<TH rowspan="2"><FONT >RL</FONT></TH>
 	<TH rowspan="2"><FONT >MLL</FONT></TH>
 	<TH rowspan="2"><FONT >FRL</FONT></TH>
 	<TH rowspan="2"><FONT >MPG</FONT></TH>
@@ -64,7 +65,7 @@ $i = $i + 1;
 $driverID = $row['DriverID'];
 include("verbindung.php");
 $query1 = "SELECT COUNT(race_results.RaceID) AS Events, SUM(race_results.Laps) AS Laps, SUM(race_results.Finish = 1) AS Wins, SUM(race_results.Finish <= 3) AS Podiums, SUM(race_results.Finish <= 5) AS Top5, SUM(race_results.Finish <= 10) AS Top10, 
-SUM(race_results.Start = 1) AS Poles, SUM(race_results.Led) AS Led, SUM(race_results.MostLapsLed) AS MLL, SUM(race_results.FastestRaceLap) AS FRL, SUM(race_results.MostPositionsGained) AS MPG, SUM(race_results.DNF) AS DNF
+SUM(race_results.Start = 1) AS Poles, SUM(race_results.Led) AS Led, SUM(race_results.Led > 0) AS RL, SUM(race_results.MostLapsLed) AS MLL, SUM(race_results.FastestRaceLap) AS FRL, SUM(race_results.MostPositionsGained) AS MPG, SUM(race_results.DNF) AS DNF
 FROM race_results INNER JOIN races ON races.ID = race_results.RaceID INNER JOIN championship ON championship.RaceID = races.ID
 WHERE (race_results.DriverID = ".$driverID.") AND (championship.Bezeichnung LIKE '".$championship_name."') AND (championship.Saison = ".$season.") AND (championship.Kategorie = ".$category.")
 GROUP BY championship.Bezeichnung, championship.Saison, championship.Kategorie";
@@ -79,6 +80,7 @@ $poles = $result1['Poles'];
 $frl = $result1['FRL'];
 $laps = $result1['Laps'];
 $led = $result1['Led'];
+$rl = $result1['RL'];
 $mll = $result1['MLL'];
 $mpg = $result1['MPG'];
 $dnf = $result1['DNF'];
@@ -105,6 +107,7 @@ print"<TR bgcolor ='$race_color'>";
 	print'<TD><FONT >'.$laps.'</FONT></TD>';
 	print'<TD><FONT >'.$led.'</FONT></TD>';
 	print'<TD><FONT >'.$ledpercent.'</FONT></TD>';
+	print'<TD><FONT >'.$rl.'</FONT></TD>';
 	print'<TD><FONT >'.$mll.'</FONT></TD>';
 	print'<TD><FONT >'.$frl.'</FONT></TD>';
 	print'<TD><FONT >'.$mpg.'</FONT></TD>';

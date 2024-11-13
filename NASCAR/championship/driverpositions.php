@@ -22,6 +22,12 @@ print '<TABLE border=1 cellpadding=1 cellspacing=0>';
 print '<TR>';
 	print'<TH><FONT>Pos</FONT></TH>';
 	print'<TH align="left"><FONT>Driver</FONT></TH>';
+	print'<TH align="left"><FONT>PP</FONT></TH>';
+	print'<TH align="left"><FONT>MPG</FONT></TH>';
+	print'<TH align="left"><FONT>RL</FONT></TH>';
+	print'<TH align="left"><FONT>MLL</FONT></TH>';
+	print'<TH align="left"><FONT>FRL</FONT></TH>';
+	print'<TH align="left"><FONT></FONT></TH>';
 	include("verbindung.php");
 	$query1 = "SELECT race_results.Finish, ColorCode
 		FROM championship INNER JOIN races on races.ID = championship.RaceID LEFT JOIN race_results on race_results.RaceID = races.ID LEFT JOIN race_result_colors on (race_result_colors.Finish = race_results.Finish)
@@ -30,12 +36,11 @@ print '<TR>';
 		GROUP BY race_results.Finish
 		ORDER BY championship.Saison, race_results.Finish";
 	$recordset1 = $database_connection->query($query1);
-	while ($result = $recordset1->fetch_assoc())
-	{
-	$position_color= 'white';
-	$position_color= $result['ColorCode'];
-	$finish_pos = $result['Finish'];
-	print "<TH bgcolor=$position_color>".$finish_pos."</TH>";
+	while ($result = $recordset1->fetch_assoc()) {
+		$position_color= 'white';
+		$position_color= $result['ColorCode'];
+		$finish_pos = $result['Finish'];
+		print "<TH bgcolor=$position_color>P".$finish_pos."</TH>";
 	}
 	print'<TH><FONT>Avg. Finish</FONT></TH>';
 print '</TR>';
@@ -52,13 +57,12 @@ $query0 = "SELECT TT.Bezeichnung, TT.Saison, TT.Kategorie, TT.DriverID, drivers.
 	ORDER BY TT.Saison, TT.Bezeichnung, TT.Kategorie, AvgFinish, Platzierungen";
 $recordset0 = $database_connection->query($query0);
 $i = 0;
-while ($row = $recordset0->fetch_assoc())
-{
-$i = $i + 1;
-$avgfinish = number_format($row['AvgFinish'], 2);
-$driverID = $row['DriverID'];
+while ($row = $recordset0->fetch_assoc()) {
+	$i = $i + 1;
+	$avgfinish = number_format($row['AvgFinish'], 2);
+	$driverID = $row['DriverID'];
 
-print'<TR>';
+	print'<TR>';
 	print'<TH><FONT >'.$i.'</FONT></TH>';
 	print"<TD align='left'><FONT ><a href='../driver/driver.php?ID=".$driverID."'>".$row['Display_Name'].'</a></FONT></TD>';
 	include("verbindung.php");
@@ -70,26 +74,88 @@ print'<TR>';
 		AND (race_results.DriverID = $driverID)
 		GROUP BY championship.Saison, championship.Bezeichnung, race_results.Finish, race_result_colors.ColorCode, race_results.DriverID
 		UNION ALL
+		SELECT COUNT(race_results.RaceID) AS CountPosition, race_results.DriverID, -5 AS Finish, 'lightgrey' AS ColorCode
+		FROM race_results INNER JOIN championship on championship.RaceID = race_results.RaceID
+		WHERE (championship.Saison = $season) and (championship.Bezeichnung = '$championship_name') AND (championship.Kategorie = $category OR championship.Kategorie = 0 OR $category = -1) AND (championship.RaceID <= $race_id_global or $race_id_global = 0)
+		AND (race_results.DriverID = $driverID) AND (race_results.Start = 1)
+		GROUP BY championship.Saison, championship.Bezeichnung, race_results.DriverID
+		UNION ALL
+		SELECT COUNT(race_results.RaceID) AS CountPosition, race_results.DriverID, -4 AS Finish, 'lightgrey' AS ColorCode
+		FROM race_results INNER JOIN championship on championship.RaceID = race_results.RaceID
+		WHERE (championship.Saison = $season) and (championship.Bezeichnung = '$championship_name') AND (championship.Kategorie = $category OR championship.Kategorie = 0 OR $category = -1) AND (championship.RaceID <= $race_id_global or $race_id_global = 0)
+		AND (race_results.DriverID = $driverID) AND (race_results.MostPositionsGained = 1)
+		GROUP BY championship.Saison, championship.Bezeichnung, race_results.DriverID
+		UNION ALL
+		SELECT COUNT(race_results.RaceID) AS CountPosition, race_results.DriverID, -3 AS Finish, 'lightgrey' AS ColorCode
+		FROM race_results INNER JOIN championship on championship.RaceID = race_results.RaceID
+		WHERE (championship.Saison = $season) and (championship.Bezeichnung = '$championship_name') AND (championship.Kategorie = $category OR championship.Kategorie = 0 OR $category = -1) AND (championship.RaceID <= $race_id_global or $race_id_global = 0)
+		AND (race_results.DriverID = $driverID) AND (race_results.Led > 0)
+		GROUP BY championship.Saison, championship.Bezeichnung, race_results.DriverID
+		UNION ALL
+		SELECT COUNT(race_results.RaceID) AS CountPosition, race_results.DriverID, -2 AS Finish, 'lightgrey' AS ColorCode
+		FROM race_results INNER JOIN championship on championship.RaceID = race_results.RaceID
+		WHERE (championship.Saison = $season) and (championship.Bezeichnung = '$championship_name') AND (championship.Kategorie = $category OR championship.Kategorie = 0 OR $category = -1) AND (championship.RaceID <= $race_id_global or $race_id_global = 0)
+		AND (race_results.DriverID = $driverID) AND (race_results.MostLapsLed = 1)
+		GROUP BY championship.Saison, championship.Bezeichnung, race_results.DriverID
+		UNION ALL
+		SELECT COUNT(race_results.RaceID) AS CountPosition, race_results.DriverID, -1 AS Finish, 'lightgrey' AS ColorCode
+		FROM race_results INNER JOIN championship on championship.RaceID = race_results.RaceID
+		WHERE (championship.Saison = $season) and (championship.Bezeichnung = '$championship_name') AND (championship.Kategorie = $category OR championship.Kategorie = 0 OR $category = -1) AND (championship.RaceID <= $race_id_global or $race_id_global = 0)
+		AND (race_results.DriverID = $driverID) AND (race_results.FastestRaceLap = 1)
+		GROUP BY championship.Saison, championship.Bezeichnung, race_results.DriverID
+		UNION ALL
 		SELECT 0 AS CountPosition, 0 AS DriverID, race_results.Finish, race_result_colors.ColorCode AS ColorCode
 		FROM race_results INNER JOIN championship on championship.RaceID = race_results.RaceID INNER JOIN race_result_colors on (race_result_colors.Finish = race_results.Finish)
 		WHERE (championship.Saison = $season) and (championship.Bezeichnung = '$championship_name') AND (championship.Kategorie = $category OR championship.Kategorie = 0 OR $category = -1) AND (championship.RaceID <= $race_id_global or $race_id_global = 0)
 		GROUP BY championship.Saison, championship.Bezeichnung, race_results.Finish, race_result_colors.ColorCode
+		UNION ALL
+		SELECT 0 AS CountPosition, 0 as DriverID, -5 AS Finish, 'lightgrey' AS ColorCode
+		FROM race_results INNER JOIN championship on championship.RaceID = race_results.RaceID
+		WHERE (championship.Saison = $season) and (championship.Bezeichnung = '$championship_name') AND (championship.Kategorie = $category OR championship.Kategorie = 0 OR $category = -1) AND (championship.RaceID <= $race_id_global or $race_id_global = 0)
+		GROUP BY championship.Saison, championship.Bezeichnung, race_results.DriverID
+		UNION ALL
+		SELECT 0 AS CountPosition, 0 as DriverID, -4 AS Finish, 'lightgrey' AS ColorCode
+		FROM race_results INNER JOIN championship on championship.RaceID = race_results.RaceID
+		WHERE (championship.Saison = $season) and (championship.Bezeichnung = '$championship_name') AND (championship.Kategorie = $category OR championship.Kategorie = 0 OR $category = -1) AND (championship.RaceID <= $race_id_global or $race_id_global = 0)
+		GROUP BY championship.Saison, championship.Bezeichnung, race_results.DriverID
+		UNION ALL
+		SELECT 0 AS CountPosition, 0 as DriverID, -3 AS Finish, 'lightgrey' AS ColorCode
+		FROM race_results INNER JOIN championship on championship.RaceID = race_results.RaceID
+		WHERE (championship.Saison = $season) and (championship.Bezeichnung = '$championship_name') AND (championship.Kategorie = $category OR championship.Kategorie = 0 OR $category = -1) AND (championship.RaceID <= $race_id_global or $race_id_global = 0)
+		GROUP BY championship.Saison, championship.Bezeichnung, race_results.DriverID
+		UNION ALL
+		SELECT 0 AS CountPosition, 0 as DriverID, -2 AS Finish, 'lightgrey' AS ColorCode
+		FROM race_results INNER JOIN championship on championship.RaceID = race_results.RaceID
+		WHERE (championship.Saison = $season) and (championship.Bezeichnung = '$championship_name') AND (championship.Kategorie = $category OR championship.Kategorie = 0 OR $category = -1) AND (championship.RaceID <= $race_id_global or $race_id_global = 0)
+		GROUP BY championship.Saison, championship.Bezeichnung, race_results.DriverID
+		UNION ALL
+		SELECT 0 AS CountPosition, 0 as DriverID, -1 AS Finish, 'lightgrey' AS ColorCode
+		FROM race_results INNER JOIN championship on championship.RaceID = race_results.RaceID
+		WHERE (championship.Saison = $season) and (championship.Bezeichnung = '$championship_name') AND (championship.Kategorie = $category OR championship.Kategorie = 0 OR $category = -1) AND (championship.RaceID <= $race_id_global or $race_id_global = 0)
+		GROUP BY championship.Saison, championship.Bezeichnung, race_results.DriverID
+		UNION ALL
+		SELECT 0 AS CountPosition, 0 as DriverID, 0 AS Finish, 'lightgrey' AS ColorCode
+		FROM race_results INNER JOIN championship on championship.RaceID = race_results.RaceID
+		WHERE (championship.Saison = $season) and (championship.Bezeichnung = '$championship_name') AND (championship.Kategorie = $category OR championship.Kategorie = 0 OR $category = -1) AND (championship.RaceID <= $race_id_global or $race_id_global = 0)
+		GROUP BY championship.Saison, championship.Bezeichnung, race_results.DriverID
 		) AS TempTable
 		GROUP BY Finish, ColorCode
 		ORDER BY Finish, MAX(CountPosition)";
 	$recordset1 = $database_connection->query($query1);
-	while ($result = $recordset1->fetch_assoc())
-	{
+	while ($result = $recordset1->fetch_assoc()) {
+		$finish = $result['Finish'];
 		$CountPosition = $result['CountPosition'];
 		$result_color = $result['ColorCode'];
-		if ($CountPosition > 0) {
+		if (($CountPosition > 0) and ($finish <> 0)) {
 			print "<TD bgcolor=$result_color align='center'><B>".$CountPosition."</B></TD>";
-		} else {
+		} elseif ($finish <> 0) {
 			print "<TD bgcolor=$result_color align='center'>".$CountPosition."</TD>";
+		} else {
+			print "<TD bgcolor=$result_color align='center'></TD>";
 		}
 	}
 	print'<TD><FONT >'.$avgfinish.'</FONT></TD>';
-print'</TR>';
+	print'</TR>';
 }
 ?>
 </TABLE>

@@ -50,13 +50,15 @@ print '<h3>'.$result['Bezeichnung'].'</h3>';
 </TR>
 <?php
 include("verbindung.php");
-$query0 = "SELECT drivers.ID as DriverID, drivers.Display_Name as drivers,
+$query0 = "SELECT DriverID, Display_Name, Gesamtwertung, Platzierungen FROM (
+SELECT drivers.ID as DriverID, drivers.Display_Name,
 ROUND(MAX(championship.Cars) - AVG(race_results.Finish)) + 10 * SUM(race_results.Finish = 1) + SUM(race_results.MostLapsLed) + SUM(race_results.FastestRaceLap) + SUM(race_results.Start = 1) as Gesamtwertung, 
 GROUP_CONCAT(LPAD(race_results.Finish, 2, '0') ORDER BY race_results.Finish) AS Platzierungen
-FROM race_results LEFT JOIN races on race_results.RaceID = races.ID LEFT JOIN tracks on races.TrackID = tracks.ID
-LEFT JOIN drivers on race_results.DriverID = drivers.ID LEFT JOIN championship on races.ID = championship.RaceID
+FROM race_results
+LEFT JOIN races on race_results.RaceID = races.ID LEFT JOIN tracks on races.TrackID = tracks.ID LEFT JOIN drivers on race_results.DriverID = drivers.ID LEFT JOIN championship on races.ID = championship.RaceID
 WHERE (races.TrackID = $trackID or $trackID = 0) AND (championship.Bezeichnung = '$championship_name_global' or '$championship_name_global' = '')
-GROUP BY drivers.ID, drivers.Display_Name
+GROUP BY drivers.ID, drivers.Display_Name, championship.Bezeichnung) AS TempTable
+GROUP BY DriverID, Display_Name, Gesamtwertung, Platzierungen
 ORDER BY Gesamtwertung DESC, Platzierungen";
 $recordset0 = $database_connection->query($query0);
 include("verbindung.php");
@@ -104,7 +106,7 @@ if ($result3['MaxSeason'] < $maxseason) {$driver_color = 'darkgrey';} else {$dri
 
 print"<TR bgcolor ='$driver_color'>";
 	print'<TH><FONT >'.$i.'</FONT></TH>';
-	print"<TD align='left'><FONT ><a href='../driver/driver.php?ID=".$driverID."'>".$row['drivers'].'</a></FONT></TD>';
+	print"<TD align='left'><FONT ><a href='../driver/driver.php?ID=".$driverID."'>".$row['Display_Name'].'</a></FONT></TD>';
 	print'<TD><FONT >'.$points.'</FONT></TD>';
 	if ($i == 1) {print'<TD><FONT >--</FONT></TD>';} else {print'<TD><FONT >'.($points-$points_max).'</FONT></TD>';}
 	print'<TD><FONT >'.$events.'</FONT></TD>';
